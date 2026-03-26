@@ -1,8 +1,8 @@
 ---
-name: P6 프롬프트 아키텍트 마스터
+name: P0 프롬프트 아키텍트 마스터
 version: 1.0
 model: Claude 3.5 Sonnet / GPT-4o
-tags: [#Agent, #MasterPrompt, #P6, #GXXN_OS]
+tags: [#Agent, #MasterPrompt, #P0]
 ---
 
 # 🤖 P6 에이전트 생성 마스터 프롬프트
