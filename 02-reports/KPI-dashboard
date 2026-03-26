@@ -1,1 +1,148 @@
+# 건기식 공통전략지표 실적 대시보드 (2026.02)
 
+이 문서는 COSMAX BTI 경영관리팀의 2026년 2월 공통전략지표 실적을 시각화한 대시보드입니다. 
+GitHub Pages 또는 로컬 환경에서 HTML로 출력하여 확인할 수 있습니다.
+
+## 1. 대시보드 실행 코드 (HTML/React)
+
+아래 코드 블록을 복사하여 `index.html`로 저장한 뒤 깃허브 레포지토리에 업로드하면 웹 링크로 공유가 가능합니다.
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GXXN OS | KPI Dashboard</title>
+    <script src="[https://unpkg.com/react@18/umd/react.development.js](https://unpkg.com/react@18/umd/react.development.js)"></script>
+    <script src="[https://unpkg.com/react-dom@18/umd/react-dom.development.js](https://unpkg.com/react-dom@18/umd/react-dom.development.js)"></script>
+    <script src="[https://unpkg.com/@babel/standalone/babel.min.js](https://unpkg.com/@babel/standalone/babel.min.js)"></script>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <script src="[https://unpkg.com/recharts/umd/Recharts.js](https://unpkg.com/recharts/umd/Recharts.js)"></script>
+    <style>
+        @import url('[https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap](https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap)');
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } = Recharts;
+
+        function Dashboard() {
+            const [selectedEntity, setSelectedEntity] = useState('Total');
+            
+            // 2월 확정 실적 데이터셋 (NBT/BIO 취합본 기반)
+            const data = {
+                'Total': [
+                    { name: '중국로컬', actual: 78, target: 74, yoy: 30, reason: '중국향 수출 및 신규 발주 확대' },
+                    { name: '글로벌사', actual: 15, target: 27, yoy: -28, reason: '고객사 B사 오더 3월 이월' },
+                    { name: '국내Top10', actual: 106, target: 74, yoy: 61, reason: '어댑트 신제품 출시 및 신규 확보' },
+                    { name: '신유통채널', actual: 29, target: 40, yoy: -15, reason: '다이소 런칭 일정 조정(3월)' }
+                ],
+                'NBT': [
+                    { name: '중국로컬', actual: 75, target: 69, yoy: 32, reason: '주요 고객사 발주 증가' },
+                    { name: '글로벌사', actual: 11, target: 19, yoy: 108, reason: '전년비 성장세 지속' },
+                    { name: '국내Top10', actual: 45, target: 31, yoy: 0, reason: '국내 마케팅 강화 및 리포지셔닝' },
+                    { name: '신유통채널', actual: 15, target: 21, yoy: 1, reason: '약국 채널 재발주 지연' }
+                ],
+                'BIO': [
+                    { name: '중국로컬', actual: 3, target: 6, yoy: 1, reason: '법인 대응 및 로컬 규제 검토' },
+                    { name: '글로벌사', actual: 4, target: 8, yoy: -73, reason: '글로벌 거래처 단기 물량 감소' },
+                    { name: '국내Top10', actual: 61, target: 42, yoy: 191, reason: '전략 품목(PDRN 등) 비중 확대' },
+                    { name: '신유통채널', actual: 14, target: 19, yoy: -27, reason: '홈쇼핑 편성 축소 영향' }
+                ]
+            };
+
+            const currentSet = data[selectedEntity];
+            const getStatusColor = (a, t) => (a / t >= 1) ? '#10B981' : (a / t >= 0.8 ? '#F59E0B' : '#EF4444');
+
+            return (
+                <div className="max-w-6xl mx-auto p-6 lg:p-12">
+                    {/* Header */}
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
+                        <div>
+                            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tighter italic">GXXN Dashboard <span className="text-blue-600">.02</span></h1>
+                            <p className="text-slate-500 mt-2 font-medium">2026년 2월 공통전략지표 실적 분석 (억원)</p>
+                        </div>
+                        <div className="flex bg-slate-200 p-1.5 rounded-xl shadow-inner">
+                            {['Total', 'NBT', 'BIO'].map(ent => (
+                                <button key={ent} onClick={() => setSelectedEntity(ent)} 
+                                    className={`px-8 py-2 rounded-lg text-sm font-black transition-all ${selectedEntity === ent ? 'bg-white shadow-md text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}>
+                                    {ent}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* KPI Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                        {currentSet.map((item, idx) => (
+                            <div key={idx} className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                                <div className="flex justify-between items-center mb-4">
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{item.name}</span>
+                                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: getStatusColor(item.actual, item.target) }}></div>
+                                </div>
+                                <div className="text-3xl font-black text-slate-800">{item.actual}<span className="text-lg font-normal text-slate-400 ml-1">억</span></div>
+                                <div className="mt-4 flex items-center justify-between">
+                                    <div className="text-xs text-slate-400 font-semibold text-left">
+                                        목표 {item.target}억<br/>
+                                        전년비 <span className={item.yoy >= 0 ? 'text-emerald-500' : 'text-rose-500'}>{item.yoy}%</span>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-2xl font-black italic text-blue-600">{Math.round((item.actual/item.target)*100)}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Charts & Insights */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div className="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                            <h3 className="text-lg font-bold mb-8 flex items-center gap-2 text-slate-800">
+                                <span className="w-2 h-2 bg-blue-600 rounded-full"></span> 실적 vs 목표 비교
+                            </h3>
+                            <div className="h-80">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={currentSet} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 12, fontWeight: 600, fill: '#64748b'}} dy={10} />
+                                        <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} />
+                                        <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}} />
+                                        <Bar dataKey="actual" name="실적" radius={[10, 10, 0, 0]} barSize={45}>
+                                            {currentSet.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={entry.actual >= entry.target ? '#2563eb' : '#94a3b8'} />
+                                            ))}
+                                        </Bar>
+                                        <Bar dataKey="target" name="목표" fill="#e2e8f0" radius={[10, 10, 0, 0]} barSize={45} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
+                        <div className="bg-slate-900 p-8 rounded-3xl shadow-xl text-white">
+                            <h3 className="text-xl font-bold mb-8 border-b border-slate-700 pb-4 italic text-blue-400">Analysis Note</h3>
+                            <div className="space-y-8">
+                                {currentSet.map((item, idx) => (
+                                    <div key={idx}>
+                                        <div className="text-xs font-bold text-slate-500 mb-2 tracking-tighter uppercase">{item.name}</div>
+                                        <p className="text-sm font-medium leading-relaxed text-slate-300">
+                                            {item.reason}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Dashboard />);
+    </script>
+</body>
+</html>
