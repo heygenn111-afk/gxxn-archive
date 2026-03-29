@@ -5,10 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>COSMAX BTI — 공통전략지표 대시보드</title>
 <!-- v3 : 검증된 CDN 고정버전 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.8.0/Recharts.js" crossorigin></script>
-<script>
+<!-- 1. Load React and ReactDOM (Required by Recharts) -->
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<!-- 2. Load Recharts -->
+<script src="https://unpkg.com/recharts/lib/Recharts.js"></script>
+<!-- 3. Your custom script -->
+<script src="your-app.js"></script>
 // 라이브러리 로드 확인 — 실패 시 화면에 오류 표시
 window.addEventListener('DOMContentLoaded',function(){
   if(typeof React==='undefined'||typeof ReactDOM==='undefined'||typeof Recharts==='undefined'){
