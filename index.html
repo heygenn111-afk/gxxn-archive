@@ -4,9 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>COSMAX BTI — 공통전략지표 대시보드</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.8.0/Recharts.js"></script>
+<!-- v3 : 검증된 CDN 고정버전 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.8.0/Recharts.js" crossorigin></script>
+<script>
+// 라이브러리 로드 확인 — 실패 시 화면에 오류 표시
+window.addEventListener('DOMContentLoaded',function(){
+  if(typeof React==='undefined'||typeof ReactDOM==='undefined'||typeof Recharts==='undefined'){
+    document.getElementById('root').innerHTML='<div style="color:#f87171;padding:40px;font-size:14px;font-family:monospace">라이브러리 로드 실패: React='+typeof React+' / ReactDOM='+typeof ReactDOM+' / Recharts='+typeof Recharts+'<br>네트워크 연결 후 새로고침(Ctrl+Shift+R) 해주세요.</div>';
+  }
+});
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f1e;color:#e2e8f0;font-family:'Noto Sans KR',system-ui,sans-serif;font-size:13px;min-height:100vh}
@@ -22,7 +31,7 @@ button:focus{outline:none}
 </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root"><div style="color:#94a3b8;padding:40px;text-align:center;font-size:13px">로딩 중...</div></div>
 <script>
 const {useState,useMemo}=React;
 const {BarChart,Bar,LineChart,Line,XAxis,YAxis,CartesianGrid,Tooltip,Legend,ResponsiveContainer,Cell}=Recharts;
@@ -124,7 +133,6 @@ function KpiCard({title,plan,actual,onClick}){
       React.createElement('div',{style:{width:pct+"%",height:"100%",background:s.rg,transition:"width 0.6s"}}))
   );
 }
-
 const CTip=({active,payload,label})=>{
   if(!active||!payload?.length)return null;
   return React.createElement('div',{style:{background:"#0f172a",border:"1px solid #334155",borderRadius:10,padding:"9px 13px",fontSize:11}},
@@ -136,7 +144,6 @@ const CTip=({active,payload,label})=>{
     ))
   );
 };
-
 function Modal({row,onClose}){
   if(!row)return null;
   const ratio=row.p26&&row.r26!=null?row.r26/row.p26:null;
@@ -175,21 +182,17 @@ function Modal({row,onClose}){
     )
   );
 }
-
 function App(){
   const [month,setMonth]=useState("202602");
   const [co,setCo]=useState("ALL");
   const [modal,setModal]=useState(null);
-
   const filt=useMemo(()=>RAW.filter(d=>d.m===month&&(co==="ALL"||d.co===co)),[month,co]);
-
   const getTop=cat=>{
     const rows=RAW.filter(d=>d.m===month&&(co==="ALL"||d.co===co)&&d.cat===cat&&TI.some(k=>d.item===k||d.item.includes("(전체)")));
     if(co==="ALL")return{p26:rows.reduce((s,d)=>s+(d.p26||0),0)||null,r26:rows.reduce((s,d)=>s+(d.r26||0),0)||null};
     return filt.find(d=>d.cat===cat&&TI.some(k=>d.item===k||d.item.includes("(전체)")))||{};
   };
   const tops=useMemo(()=>Object.fromEntries(CATS.map(c=>[c,getTop(c)])),[filt,month,co]);
-
   const barData=CATS.map(cat=>{
     const d=tops[cat];const ratio=d?.p26&&d?.r26!=null?d.r26/d.p26:null;
     return{name:CL[cat],계획:d?.p26||0,실적:d?.r26||0,ratio};
@@ -199,42 +202,31 @@ function App(){
     const val=co==="ALL"?rows.reduce((s,d)=>s+(d.r26||0),0):rows[0]?.r26;
     return[CL[cat],val||null];
   })]));
-
   const tableRows=filt.filter(d=>!TI.some(k=>d.item===k||d.item.includes("(전체)")));
   const ml=MO.find(o=>o.v===month)?.l;
-
   return React.createElement('div',{style:{minHeight:"100vh",background:"#0a0f1e",color:"#e2e8f0"}},
-    // HEADER
     React.createElement('div',{style:{borderBottom:"1px solid #1e293b",padding:"10px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(15,23,42,0.98)",position:"sticky",top:0,zIndex:50}},
       React.createElement('div',{style:{display:"flex",alignItems:"center",gap:10}},
         React.createElement('div',{style:{width:34,height:34,borderRadius:9,background:"#3b82f6",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,color:"#fff",fontSize:14,flexShrink:0}},"C"),
         React.createElement('div',null,
-          React.createElement('div',{style:{fontWeight:900,fontSize:14,color:"#f1f5f9",letterSpacing:"-0.02em"}},"COSMAX BTI"),
+          React.createElement('div',{style:{fontWeight:900,fontSize:14,color:"#f1f5f9"}},"COSMAX BTI"),
           React.createElement('div',{style:{fontSize:10,color:"#475569"}},"'26년 공통전략지표 경영실적 대시보드"))),
       React.createElement('div',{style:{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}},
         React.createElement('span',{style:{fontSize:10,color:"#475569"}},"기준월"),
-        React.createElement('select',{value:month,onChange:e=>setMonth(e.target.value),
-          style:{background:"#1e293b",border:"1px solid #334155",borderRadius:7,padding:"5px 10px",color:"#f1f5f9",fontSize:12,fontWeight:700}},
+        React.createElement('select',{value:month,onChange:e=>setMonth(e.target.value),style:{background:"#1e293b",border:"1px solid #334155",borderRadius:7,padding:"5px 10px",color:"#f1f5f9",fontSize:12,fontWeight:700}},
           MO.map(o=>React.createElement('option',{key:o.v,value:o.v},o.l))),
         React.createElement('div',{style:{display:"flex",borderRadius:7,overflow:"hidden",border:"1px solid #334155"}},
-          ["ALL","NBT","BIO"].map(c=>React.createElement('button',{key:c,onClick:()=>setCo(c),
-            style:{padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",border:"none",
-              background:co===c?"#3b82f6":"#1e293b",color:co===c?"#fff":"#64748b",transition:"background 0.15s"}},
-            c==="ALL"?"전체":c))),
+          ["ALL","NBT","BIO"].map(c=>React.createElement('button',{key:c,onClick:()=>setCo(c),style:{padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",border:"none",background:co===c?"#3b82f6":"#1e293b",color:co===c?"#fff":"#64748b"}},c==="ALL"?"전체":c))),
         React.createElement('span',{style:{fontSize:10,color:"#475569",border:"1px solid #334155",borderRadius:7,padding:"5px 10px",background:"#1e293b"}},ml+" 확정실적")
       )),
-    // BODY
     React.createElement('div',{style:{padding:"16px 20px",maxWidth:1400,margin:"0 auto"}},
-      React.createElement('div',{style:{fontSize:10,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}},
-        "📊 핵심지표 Summary — 계획비 기준 · 카드 클릭 시 증감사유"),
-      // KPI
+      React.createElement('div',{style:{fontSize:10,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}},"📊 핵심지표 Summary — 계획비 기준 · 카드 클릭 시 증감사유"),
       React.createElement('div',{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:8,marginBottom:16}},
         CATS.map(cat=>{
           const d=tops[cat];
           const tr=filt.find(r=>r.cat===cat&&TI.some(k=>r.item===k||r.item.includes("(전체)")));
           return React.createElement(KpiCard,{key:cat,title:CL[cat],plan:d?.p26,actual:d?.r26,onClick:()=>tr?.why&&setModal(tr)});
         })),
-      // CHARTS
       React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}},
         React.createElement('div',{style:{background:"#0f172a",borderRadius:14,padding:16,border:"1px solid #1e293b"}},
           React.createElement('div',{style:{fontWeight:700,fontSize:13,color:"#f1f5f9",marginBottom:1}},"계획 vs 실적"),
@@ -247,8 +239,7 @@ function App(){
               React.createElement(Tooltip,{content:React.createElement(CTip)}),
               React.createElement(Legend,{iconType:"circle",iconSize:6,formatter:v=>React.createElement('span',{style:{fontSize:10,color:"#64748b"}},v)}),
               React.createElement(Bar,{dataKey:"계획",radius:[3,3,0,0]},barData.map((_,i)=>React.createElement(Cell,{key:i,fill:"#1e3a5f"}))),
-              React.createElement(Bar,{dataKey:"실적",radius:[3,3,0,0]},
-                barData.map((d,i)=>{const c={GREEN:"#22c55e",YELLOW:"#eab308",RED:"#ef4444",GRAY:"#475569"};return React.createElement(Cell,{key:i,fill:c[gs(d.ratio)]});}))
+              React.createElement(Bar,{dataKey:"실적",radius:[3,3,0,0]},barData.map((d,i)=>{const c={GREEN:"#22c55e",YELLOW:"#eab308",RED:"#ef4444",GRAY:"#475569"};return React.createElement(Cell,{key:i,fill:c[gs(d.ratio)]});}))
             ))),
         React.createElement('div',{style:{background:"#0f172a",borderRadius:14,padding:16,border:"1px solid #1e293b"}},
           React.createElement('div',{style:{fontWeight:700,fontSize:13,color:"#f1f5f9",marginBottom:1}},"월별 실적 추이"),
@@ -262,7 +253,6 @@ function App(){
               React.createElement(Legend,{iconType:"circle",iconSize:6,formatter:v=>React.createElement('span',{style:{fontSize:9,color:"#64748b"}},v)}),
               CATS.map((cat,i)=>React.createElement(Line,{key:cat,type:"monotone",dataKey:CL[cat],stroke:LC[i],strokeWidth:2,dot:{r:3,fill:LC[i]},connectNulls:true}))
             )))),
-      // TABLE
       React.createElement('div',{style:{background:"#0f172a",borderRadius:14,border:"1px solid #1e293b",overflow:"hidden"}},
         React.createElement('div',{style:{padding:"12px 16px",borderBottom:"1px solid #1e293b",display:"flex",alignItems:"center",justifyContent:"space-between"}},
           React.createElement('div',null,
@@ -301,13 +291,11 @@ function App(){
           )
         )
       ),
-      React.createElement('div',{style:{textAlign:"center",fontSize:10,color:"#334155",marginTop:12,paddingBottom:8}},
-        "COSMAX BTI 경영관리팀 · "+ml+" 확정실적 · 단위: 억원")
+      React.createElement('div',{style:{textAlign:"center",fontSize:10,color:"#334155",marginTop:12,paddingBottom:8}},"COSMAX BTI 경영관리팀 · "+ml+" 확정실적 · 단위: 억원")
     ),
     React.createElement(Modal,{row:modal,onClose:()=>setModal(null)})
   );
 }
-
 ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
 </script>
 </body>
