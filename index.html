@@ -3,24 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>COSMAX BTI — 공통전략지표 대시보드 v2</title>
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<title>COSMAX BTI — 공통전략지표 대시보드</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0f1e;color:#e2e8f0;font-family:'Pretendard','Noto Sans KR',system-ui,sans-serif;font-size:13px;min-height:100vh}
-select{appearance:none;-webkit-appearance:none;cursor:pointer}
 button:focus{outline:none}
 .kpi{transition:transform 0.15s;cursor:pointer}
 .kpi:hover{transform:translateY(-2px)}
-tr:hover td{background:rgba(59,130,246,0.06)!important}
+tr:hover td{background:rgba(59,130,246,0.04)!important}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:#0f172a}
 ::-webkit-scrollbar-thumb{background:#334155;border-radius:3px}
 </style>
 </head>
 <body>
-<div id="root"><div style="color:#94a3b8;padding:60px;text-align:center;font-size:14px">로딩 중...</div></div>
+<div id="root"><div style="color:#94a3b8;padding:60px;text-align:center">로딩 중...</div></div>
 <script>/**
  * @license React
  * react.production.min.js
@@ -322,240 +320,214 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
 })();
 </script>
 <script>
-var e = React.createElement;
-var useState = React.useState;
-var useMemo = React.useMemo;
+var e=React.createElement,useState=React.useState,useMemo=React.useMemo;
 
-/* ── 인사이트 배너 데이터 (매월 교체) ── */
-var INSIGHTS = {
-  wins: [
-    "[국내 Top10] NBT +13억 (에이투젠+4억·경남제약+3억·뉴트리+2억), BIO +19억 (어댑트+10억·신세계바이오+3억·오니스트+3억) → 건기식 합산 계획비 144%",
-    "[전략소재] NBT 리스펙타 +5억, BIO PDRN +2억·차즈기 +2억 — 개별인정 소재 실적 견조",
-    "[중국로컬 NBT] 백양의약 +13억(신제품 런칭), By Health +5억 — 기타 신규 고객사 성장"
-  ],
-  risks: [
-    "[글로벌사] NBT Unilever -5억(부자재 이슈·생산일정 지연), BIO H&H -4.4억(품질승인 지연→3월 이월) — 건기식 계획비 54%",
-    "[BIO 기술제형] 듀얼팩 -3억(종근당 3월 출시 예정·1Q 공백), 프레스샷 -3억(설비세팅 지연)",
-    "[신유통] 약국 NBT -4억·BIO -4억(재발주 저조), 다이소 NBT -2억·BIO -4억(LG 신제품 런칭 전)"
-  ]
-};
-
-/* ── Status 기준 (PPT 기준) ── */
-// 초과 100%↑ GREEN / 98~100% 양호 GREEN / 95~98% 주의 YELLOW / 95%↓ RED
-function gs(r) {
-  if (r == null || isNaN(r) || !isFinite(r)) return "GRAY";
-  if (r >= 1.00) return "GREEN";
-  if (r >= 0.98) return "GOOD";
-  if (r >= 0.95) return "YELLOW";
-  return "RED";
-}
-var ST = {
-  GREEN:  { bg:"#dcfce7", tx:"#166534", rg:"#22c55e", lb:"달성"  },
-  GOOD:   { bg:"#dcfce7", tx:"#166534", rg:"#16a34a", lb:"양호"  },
-  YELLOW: { bg:"#fef9c3", tx:"#854d0e", rg:"#ca8a04", lb:"주의"  },
-  RED:    { bg:"#fee2e2", tx:"#991b1b", rg:"#ef4444", lb:"위험"  },
-  GRAY:   { bg:"#1e293b", tx:"#94a3b8", rg:"#475569", lb:"미입력" }
-};
-function f(v, d) { d = d || 1; return (v == null || isNaN(v)) ? "–" : Number(v).toFixed(d); }
-function fp(v) { return (v == null || isNaN(v) || !isFinite(v)) ? "–" : Math.round(v * 100) + "%"; }
-function fdiff(v) { if (v == null || isNaN(v)) return "–"; var r = (v >= 0 ? "+" : "") + f(v); return r; }
-
-/* ── 데이터 ── */
-var MO = [
-  { v:"202601", l:"1월" },
-  { v:"202602", l:"2월" },
-  { v:"YTD",   l:"누계(YTD)" }
-];
-
-/* 지표 정의 */
-var CATS = [
-  { id:"중국로컬",  label:"중국로컬 매출",   num:"①" },
-  { id:"글로벌사",  label:"글로벌사 매출",   num:"②" },
-  { id:"국내Top10", label:"국내 Top10 매출", num:"③" },
-  { id:"신유통",   label:"신유통채널 매출",  num:"④" },
-  { id:"전략소재",  label:"전략소재 매출",   num:"⑤" },
-  { id:"일반제형",  label:"일반제형 Top3",   num:"⑥" },
-  { id:"기술제형",  label:"기술제형 Top3",   num:"⑦" }
-];
-
-/* 채널별 성과 데이터 */
-var CHANNEL_DATA = {
-  "202602": {
-    NBT: [
-      { name:"약국",   plan:8.73, actual:5,    label:"약국" },
-      { name:"올리브영", plan:8.73, actual:9.5,  label:"올리브영" },
-      { name:"다이소",  plan:2.18, actual:0,    label:"다이소" },
-      { name:"편의점",  plan:1.45, actual:0.4,  label:"편의점" }
+/* ══════════════════════════════════════
+   인사이트 배너 — 탭별 내용 완전 분리
+══════════════════════════════════════ */
+var INSIGHTS={
+  전체:{
+    wins:[
+      "건기식 국내 Top10 계획비 144% (NBT+13억·BIO+19억) — 국내마케팅 합산 192억, 계획비 108%·+15억",
+      "올리브영 양사 합산 +4억 초과 달성 (NBT 109%·BIO 158%) — 신유통 내 유일한 성장 채널",
+      "전략소재 건기식 합산 29억 / NBT 리스펙타 +5억·BIO PDRN +2억·차즈기 +2억"
     ],
-    BIO: [
-      { name:"약국",   plan:8.65, actual:4.47, label:"약국" },
-      { name:"올리브영", plan:5.04, actual:7.98, label:"올리브영" },
-      { name:"다이소",  plan:5.35, actual:1.78, label:"다이소" },
-      { name:"편의점",  plan:0,    actual:0,    label:"편의점" }
+    risks:[
+      "글로벌사 건기식 합산 계획비 54% (-12억) — 양사 공통: 부자재·품질승인 이슈로 3월 이월 집중",
+      "신유통 약국 양사 -8억 / 다이소 -6억 — 재발주 저조·신제품 런칭 시점 3월로 밀림",
+      "BIO 기술제형 계획비 14% (-7억) · NBT+BIO 기술제형 합산 계획비 68% — 1Q 공백 후 3월 회복 예상"
     ]
   },
-  "202601": {
-    NBT: [
-      { name:"약국",   plan:9.27, actual:11.4, label:"약국" },
-      { name:"올리브영", plan:9.27, actual:13.9, label:"올리브영" },
-      { name:"다이소",  plan:2.32, actual:0.6,  label:"다이소" },
-      { name:"편의점",  plan:1.45, actual:0.8,  label:"편의점" }
+  NBT:{
+    wins:[
+      "국내 Top10 계획비 142% (+13억) — 에이투젠 +4억(홈쇼핑 재개), 경남제약 +3억(국군복지단), 뉴트리 +2억(올리브베러)",
+      "중국로컬 계획비 108% (+6억) — 백양의약 +13억(신제품 런칭), Nature Faith·By Health 기타 신규 +10억",
+      "전략소재 +2억·기술제형 +1억 — 리스펙타(+5억)·A;dam·AEPP 정상 달성"
     ],
-    BIO: [
-      { name:"약국",   plan:7, actual:6.4, label:"약국" },
-      { name:"올리브영", plan:5, actual:6.2, label:"올리브영" },
-      { name:"다이소",  plan:3, actual:1.8, label:"다이소" },
-      { name:"편의점",  plan:0, actual:0,   label:"편의점" }
+    risks:[
+      "글로벌사 계획비 56% (-8억) — Unilever -5억(부자재 이슈·생산 지연), H&H -3억(발주 저조·신제품 지연)",
+      "신유통 계획비 71% (-6억) — 약국 -4억(재발주 저조), 다이소 -2억(3월 런칭), 편의점 -1억",
+      "중국로컬 Tilis -13억(리뉴얼 홀딩), 멜라루카 -5억(MLM 회원 감소) — 기타 신규로 일부 상쇄"
+    ]
+  },
+  BIO:{
+    wins:[
+      "국내 Top10 계획비 146% (+19억) — 어댑트 +10억(수출지원 증가), 신세계바이오 +3억, 오니스트 +3억",
+      "올리브영 계획비 158% (+3억) — 어댑트 컷팅젤리 키티버전·포켓젤리 5종 신규 출시 효과",
+      "PDRN +2억·차즈기 +2억·Rosy Face 신규 1억 — 개별인정 소재·중국로컬 신규 고객사 성장"
+    ],
+    risks:[
+      "기술제형 계획비 14% (-7억) — 듀얼팩 -3억(종근당 3월 출시→1Q 공백), 프레스샷 -3억(설비 세팅 지연)",
+      "글로벌사 계획비 48% (-4억) — H&H 4.4억 3월 이월(액상칼슘·콜라겐액상 품질승인 지연)",
+      "전략소재 계획비 64% (-4억) — 키라임복합 1Q 전체 공백(5월 제품화), 아쉬아간다 판매 저조"
     ]
   }
 };
 
-/* 세부 테이블 데이터 — 지표별 그룹 */
-var TABLE_GROUPS = [
-  {
-    id:"중국로컬", num:"①", label:"중국로컬 매출",
-    rows: [
-      { item:"백양의약",   NBT:{p26:26,r26:39,a25:32,why:"고객사 판매량 증가, 신제품 런칭"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"Tilis",      NBT:{p26:24,r26:11,a25:7, why:"고객사 제품 리뉴얼로 인한 생산 홀딩 및 판매부진"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"GSK",        NBT:{p26:6, r26:6, a25:6, why:"계획 달성"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"멜라루카",    NBT:{p26:6, r26:0.5,a25:9,why:"고객사(MLM) 회원감소로 판매부진"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"AUTILI",     NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:1.19,r26:1.66,a25:3.16,why:"정상"}},
-      { item:"FEIFAN",     NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:1.74,r26:0,a25:0,why:"3월 이월 매출 예정"}},
-      { item:"Rosy Face",  NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:0,r26:1,a25:0,why:"신규 매출 발생"}},
-      { item:"기타",        NBT:{p26:6.76,r26:18,a25:2.5,why:"Nature Faith +5억, By Health +5억 신규"}, BIO:{p26:2.64,r26:0.54,a25:0.02,why:"기타 합계"}}
-    ],
-    totals: {
-      NBT:{p26:68.76,r26:74.5,a25:56.5,why:"백양의약: 고객사 판매량 증가·신제품 런칭\nTilis: 리뉴얼로 생산 홀딩\n멜라루카: MLM 회원 감소로 판매 부진"},
-      BIO:{p26:5.57,r26:3.21,a25:null,why:"FEIFAN: 츄어블 연질 3월 약 4억 매출 예정"}
-    }
+/* ══════════════════════════════════════
+   Status / 유틸
+══════════════════════════════════════ */
+function gs(r){
+  if(r==null||isNaN(r)||!isFinite(r))return"GRAY";
+  if(r>=1.00)return"GREEN";if(r>=0.98)return"GOOD";
+  if(r>=0.95)return"YELLOW";return"RED";
+}
+var ST={
+  GREEN:{bg:"#dcfce7",tx:"#166534",rg:"#22c55e",lb:"달성"},
+  GOOD: {bg:"#dcfce7",tx:"#166534",rg:"#16a34a",lb:"양호"},
+  YELLOW:{bg:"#fef9c3",tx:"#854d0e",rg:"#ca8a04",lb:"주의"},
+  RED:  {bg:"#fee2e2",tx:"#991b1b",rg:"#ef4444",lb:"위험"},
+  GRAY: {bg:"#1e293b",tx:"#94a3b8",rg:"#475569",lb:"미입력"}
+};
+function f(v,d){d=d==null?1:d;return(v==null||isNaN(v))?"–":Number(v).toFixed(d);}
+function fp(v){return(v==null||isNaN(v)||!isFinite(v))?"–":Math.round(v*100)+"%";}
+function fdiff(v){if(v==null||isNaN(v))return"–";return(v>=0?"+":"")+f(v);}
+
+/* ══════════════════════════════════════
+   기준월 / 지표 정의
+══════════════════════════════════════ */
+var MO=[{v:"202601",l:"1월"},{v:"202602",l:"2월"},{v:"YTD",l:"누계(YTD)"}];
+var CATS=[
+  {id:"중국로컬", label:"중국로컬 매출",  num:"①",color:"#3b82f6"},
+  {id:"글로벌사", label:"글로벌사 매출",  num:"②",color:"#ef4444"},
+  {id:"국내Top10",label:"국내 Top10",    num:"③",color:"#10b981"},
+  {id:"신유통",  label:"신유통채널 매출", num:"④",color:"#f59e0b"},
+  {id:"전략소재", label:"전략소재 매출",  num:"⑤",color:"#8b5cf6"},
+  {id:"일반제형", label:"일반제형 Top3",  num:"⑥",color:"#06b6d4"},
+  {id:"기술제형", label:"기술제형 Top3",  num:"⑦",color:"#f97316"}
+];
+
+/* ══════════════════════════════════════
+   지표 데이터 (TABLE_GROUPS)
+══════════════════════════════════════ */
+var TABLE_GROUPS=[
+  {id:"중국로컬",num:"①",label:"중국로컬 매출",
+   rows:[
+    {item:"백양의약",      NBT:{p26:26,  r26:39,  a25:32,  why:"고객사 판매량 증가·신제품 런칭 (+13억)"},   BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"Tilis",        NBT:{p26:24,  r26:11,  a25:7,   why:"제품 리뉴얼로 인한 생산 홀딩 및 판매부진"}, BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"GSK",          NBT:{p26:6,   r26:6,   a25:6,   why:"계획 달성"},                               BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"멜라루카",       NBT:{p26:6,   r26:0.5, a25:9,   why:"고객사(MLM) 회원감소로 판매부진"},           BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"AUTILI",       NBT:{p26:null,r26:null,a25:null,why:""},                                        BIO:{p26:1.19,r26:1.66,a25:3.16,why:"정상"}},
+    {item:"FEIFAN",       NBT:{p26:null,r26:null,a25:null,why:""},                                        BIO:{p26:1.74,r26:0,   a25:0,   why:"츄어블 연질 매출(4억) → 3월 이월"}},
+    {item:"Rosy Face",    NBT:{p26:null,r26:null,a25:null,why:""},                                        BIO:{p26:0,   r26:1,   a25:0,   why:"신규 매출 발생"}},
+    {item:"기타",           NBT:{p26:6.76,r26:18,  a25:2.5, why:"Nature Faith +5억·By Health +5억 신규"},  BIO:{p26:2.64,r26:0.54,a25:0.02,why:"기타 합계"}}
+   ],
+   totals:{
+    NBT:{p26:68.76,r26:74.5,a25:56.5,why:"백양의약: 신제품 런칭·고객사 발주 급증 (+13억)\nTilis: 리뉴얼 생산 홀딩 (-13억)\n멜라루카: MLM 회원 감소 (-5억)\n기타 신규: Nature Faith·By Health (+10억)"},
+    BIO:{p26:5.57, r26:3.21,a25:null,why:"FEIFAN: 츄어블 연질 4억 → 3월 이월\nRosy Face: 신규 매출 1억 발생"}
+   }
   },
-  {
-    id:"글로벌사", num:"②", label:"글로벌사 매출",
-    rows: [
-      { item:"Unilever",   NBT:{p26:13,r26:8,  a25:1,  why:"계획 매출 확보하였으나 부자재 이슈로 생산 지연"}, BIO:{p26:0,r26:0,a25:0,why:""}},
-      { item:"H&H (Swisse)",NBT:{p26:4, r26:0.8,a25:1.2,why:"예상대비 발주 저조 및 신제품 출시 지연"}, BIO:{p26:2.16,r26:0.05,a25:7.9,why:"액상칼슘·콜라겐액상 품질 승인 지연 → 3월 이월"}},
-      { item:"Herbalife",  NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:6.14,r26:3.96,a25:7.24,why:"계획 미달"}},
-      { item:"Amway",      NBT:{p26:2,r26:1.8,a25:2.9,why:"정상"}, BIO:{p26:null,r26:null,a25:null,why:""}}
-    ],
-    totals: {
-      NBT:{p26:19,r26:10.6,a25:5.1,why:"H&H 예상 대비 발주 저조·신제품 출시 지연\nUnilever: 고객사 지정 부자재 이슈로 생산일정 지연"},
-      BIO:{p26:8.30,r26:4.02,a25:null,why:"H&H: 액상칼슘·콜라겐액상 품질 승인 지연\n4.4억 3월로 이월"}
-    }
+  {id:"글로벌사",num:"②",label:"글로벌사 매출",
+   rows:[
+    {item:"Unilever",     NBT:{p26:13,  r26:8,   a25:1,   why:"계획 매출 확보하였으나 부자재 이슈로 생산 지연"}, BIO:{p26:0,   r26:0,   a25:0,   why:""}},
+    {item:"H&H (Swisse)", NBT:{p26:4,   r26:0.8, a25:1.2, why:"예상대비 발주 저조 및 신제품 출시 지연"},         BIO:{p26:2.16,r26:0.05,a25:7.9, why:"액상칼슘·콜라겐액상 품질승인 지연 → 3월 이월 4.4억"}},
+    {item:"Herbalife",    NBT:{p26:null,r26:null,a25:null,why:""},                                              BIO:{p26:6.14,r26:3.96,a25:7.24,why:"계획 미달"}},
+    {item:"Amway",        NBT:{p26:2,   r26:1.8, a25:2.9, why:"정상"},                                         BIO:{p26:null,r26:null,a25:null,why:""}}
+   ],
+   totals:{
+    NBT:{p26:19,  r26:10.6,a25:5.1, why:"H&H: 예상 대비 발주 저조·신제품 출시 지연\nUnilever: 부자재 이슈로 생산일정 지연"},
+    BIO:{p26:8.30,r26:4.02,a25:null,why:"H&H: 액상칼슘·콜라겐액상 품질 승인 지연\n→ 4.4억 3월 이월"}
+   }
   },
-  {
-    id:"국내Top10", num:"③", label:"국내 Top10 매출",
-    rows: [
-      { item:"와우바이오텍",     NBT:{p26:6.18,r26:6.98,a25:5.87,why:"정상"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"뉴트리",          NBT:{p26:5.09,r26:6.62,a25:3.66,why:"올리브베러 행사 효과"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"헥토헬스케어",     NBT:{p26:4.36,r26:6.49,a25:5.77,why:"정상"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"에이투젠",         NBT:{p26:2.18,r26:5.90,a25:0.64,why:"홈쇼핑 운영 재개"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"경남제약",         NBT:{p26:1.09,r26:4.13,a25:1.16,why:"국군복지단 재수주"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"어댑트",           NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:10.19,r26:20.27,a25:4.26,why:"수출지원 매출 증가"}},
-      { item:"넥스트플레이어",    NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:8.41,r26:10.08,a25:3.82,why:"정상"}},
-      { item:"교원그룹",         NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:9.08,r26:9.25,a25:2.56,why:"정상"}},
-      { item:"Top6~10 (기타)",   NBT:{p26:12.5,r26:15.0,a25:13.0,why:"각 고객사 신제품 효과"}, BIO:{p26:14.5,r26:21.79,a25:6.1,why:"신세계바이오·오니스트 신규"}}
-    ],
-    totals: {
-      NBT:{p26:31.42,r26:44.68,a25:null,why:"올리브베러 행사로 고객사 판매 증가\n신제품 출시 / 홈쇼핑 운영 재개\n루테인구미 국군복지단 납품"},
-      BIO:{p26:42.18,r26:61.39,a25:null,why:"어댑트 수출지원 매출 증가\n신세계바이오: 솔티스혈당분말\n오니스트: 케라글로우망고 젤리"}
-    }
+  {id:"국내Top10",num:"③",label:"국내 Top10",
+   rows:[
+    {item:"와우바이오텍",    NBT:{p26:6.18,r26:6.98,a25:5.87,why:"정상"},                             BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"뉴트리",         NBT:{p26:5.09,r26:6.62,a25:3.66,why:"올리브베러 행사 수혜"},              BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"헥토헬스케어",    NBT:{p26:4.36,r26:6.49,a25:5.77,why:"정상"},                             BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"에이투젠",        NBT:{p26:2.18,r26:5.90,a25:0.64,why:"홈쇼핑 운영 재개 (+4억)"},          BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"경남제약",        NBT:{p26:1.09,r26:4.13,a25:1.16,why:"국군복지단 재수주 (+3억)"},          BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"어댑트",          NBT:{p26:null,r26:null,a25:null,why:""},                                 BIO:{p26:10.19,r26:20.27,a25:4.26,why:"수출지원 매출 증가 (+10억)"}},
+    {item:"넥스트플레이어",   NBT:{p26:null,r26:null,a25:null,why:""},                                 BIO:{p26:8.41,r26:10.08,a25:3.82,why:"정상"}},
+    {item:"교원그룹",        NBT:{p26:null,r26:null,a25:null,why:""},                                 BIO:{p26:9.08,r26:9.25,a25:2.56,why:"정상"}},
+    {item:"Top6~10 (기타)",  NBT:{p26:12.5,r26:15.0,a25:13.0,why:"각 고객사 신제품 효과"},            BIO:{p26:14.5,r26:21.79,a25:6.1, why:"신세계바이오+3억·오니스트+3억"}}
+   ],
+   totals:{
+    NBT:{p26:31.42,r26:44.68,a25:null,why:"에이투젠 +4억(홈쇼핑 재개)\n경남제약 +3억(국군복지단 재수주)\n뉴트리 +2억(올리브베러 행사)"},
+    BIO:{p26:42.18,r26:61.39,a25:null,why:"어댑트 +10억(수출지원 증가)\n신세계바이오 +3억(솔티스혈당분말)\n오니스트 +3억(케라글로우망고 젤리)"}
+   }
   },
-  {
-    id:"신유통", num:"④", label:"신유통채널 매출",
-    rows: [
-      { item:"약국",    NBT:{p26:8.73,r26:5,  a25:10.2,why:"재발주 품목 판매 저조"}, BIO:{p26:8.65,r26:4.47,a25:4.69,why:"동아제약·온누리약국 부진"}},
-      { item:"올리브영", NBT:{p26:8.73,r26:9.5, a25:2,  why:"올리브베러 신제품 런칭"}, BIO:{p26:5.04,r26:7.98,a25:0.81,why:"어댑트 컷팅젤리 키티버전 출시, 포켓젤리 5종"}},
-      { item:"다이소",   NBT:{p26:2.18,r26:0,   a25:0.9, why:"3월 신제품 진행 예정"}, BIO:{p26:5.35,r26:1.78,a25:0,  why:"LG 다이소 신제품 출시"}},
-      { item:"편의점",   NBT:{p26:1.45,r26:0.4, a25:0,  why:"재발주 저조"}, BIO:{p26:0,r26:0,a25:0,why:""}}
-    ],
-    totals: {
-      NBT:{p26:21.09,r26:14.9,a25:14.7,why:"약국: 재발주 품목 판매 저조\n올리브영: 올리브베러 신제품 런칭\n다이소: 3월 신제품 진행"},
-      BIO:{p26:19.04,r26:14.23,a25:null,why:"약국: 동아제약·온누리 부진\n올리브영: 어댑트 컷팅젤리 키티버전·포켓젤리 5종\n다이소: LG 신제품"}
-    }
+  {id:"신유통",num:"④",label:"신유통채널 매출",
+   rows:[
+    {item:"약국",     NBT:{p26:8.73,r26:5,   a25:10.2,why:"재발주 품목 판매 저조"},                              BIO:{p26:8.65,r26:4.47,a25:4.69,why:"동아제약 실속형·온누리약국 부진"}},
+    {item:"올리브영",  NBT:{p26:8.73,r26:9.5, a25:2,   why:"올리브베러 신제품 런칭"},                             BIO:{p26:5.04,r26:7.98,a25:0.81,why:"어댑트 컷팅젤리 키티버전·포켓젤리 5종 출시"}},
+    {item:"다이소",    NBT:{p26:2.18,r26:0,   a25:0.9, why:"3월 신제품 진행 예정"},                               BIO:{p26:5.35,r26:1.78,a25:0,   why:"LG 다이소 신제품 출시 예정·현재 Drop"}},
+    {item:"편의점",    NBT:{p26:1.45,r26:0.4, a25:0,   why:"재발주 저조"},                                       BIO:{p26:0,   r26:0,   a25:0,   why:""}}
+   ],
+   totals:{
+    NBT:{p26:21.09,r26:14.9,a25:14.7,why:"약국 -4억(재발주 저조)\n올리브영 +1억(올리브베러 런칭)\n다이소 -2억(3월 신제품 예정)\n편의점 -1억"},
+    BIO:{p26:19.04,r26:14.23,a25:null,why:"약국 -4억(동아제약·온누리 부진)\n올리브영 +3억(어댑트 컷팅젤리·포켓젤리)\n다이소 -4억(LG 신제품 Drop)"}
+   }
   },
-  {
-    id:"전략소재", num:"⑤", label:"전략소재 매출",
-    rows: [
-      { item:"리스펙타",    NBT:{p26:13.5,r26:18,a25:null,why:"판매 증가"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"아쉬아간다",  NBT:{p26:2.25,r26:0, a25:null,why:"판매 저조"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"PDRN",       NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:2.24,r26:4.01,a25:null,why:"판매 증가"}},
-      { item:"키라임복합",  NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:4.0,r26:0,a25:null,why:"광고심의 3월초 완료, 5월 제품화 예상"}},
-      { item:"차즈기",      NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:0,r26:2,a25:null,why:"신규 매출 발생"}},
-      { item:"기타",        NBT:{p26:4.2,r26:4,a25:null,why:"기타 전략소재 합계"}, BIO:{p26:4.93,r26:1,a25:null,why:"기타 합계"}}
-    ],
-    totals: {
-      NBT:{p26:19.95,r26:22,a25:null,why:"리스펙타: 판매 증가\n아쉬아간다: 판매 저조"},
-      BIO:{p26:11.0,r26:7.0,a25:null,why:"키라임복합: 광고심의 3월초 완료, 5월 제품화 예상\nPDRN: 판매 증가"}
-    }
+  {id:"전략소재",num:"⑤",label:"전략소재 매출",
+   rows:[
+    {item:"리스펙타",   NBT:{p26:13.5,r26:18,  a25:null,why:"판매 증가 (+5억)"},              BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"아쉬아간다",  NBT:{p26:2.25,r26:0,   a25:null,why:"판매 저조 (-2억)"},              BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"PDRN",      NBT:{p26:null,r26:null,a25:null,why:""},                              BIO:{p26:2.24,r26:4.01,a25:null,why:"판매 증가 (+2억)"}},
+    {item:"키라임복합",  NBT:{p26:null,r26:null,a25:null,why:""},                              BIO:{p26:4.0, r26:0,   a25:null,why:"광고심의 3월초 완료·5월 제품화 예상·1Q 공백"}},
+    {item:"차즈기",     NBT:{p26:null,r26:null,a25:null,why:""},                              BIO:{p26:0,   r26:2,   a25:null,why:"신규 매출 (+2억)"}},
+    {item:"기타",        NBT:{p26:4.2, r26:4,   a25:null,why:"기타 전략소재 합계"},             BIO:{p26:4.93,r26:1,   a25:null,why:"기타 합계"}}
+   ],
+   totals:{
+    NBT:{p26:19.95,r26:22,  a25:null,why:"리스펙타: 판매 증가 (+5억)\n아쉬아간다: 판매 저조 (-2억)"},
+    BIO:{p26:11.0, r26:7.0, a25:null,why:"PDRN +2억·차즈기 +2억\n키라임복합: 5월 제품화·1Q 전체 공백 (-4억)"}
+   }
   },
-  {
-    id:"일반제형", num:"⑥", label:"일반제형 Top3",
-    rows: [
-      { item:"액상/젤리", NBT:{p26:42,  r26:43,  a25:null,why:"정상"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"유산균",    NBT:{p26:72.18,r26:68,  a25:null,why:"백양제약 설비 이슈로 3월 납품 지연"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"구미",      NBT:{p26:16.17,r26:15,  a25:null,why:"Unilever 부자재 이슈"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"젤리",      NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:25.2,r26:35,a25:null,why:"계획 초과 달성"}},
-      { item:"정제",      NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:23.7,r26:14,a25:null,why:"에스더포뮬러 멀티비타민 3월 매출 예정"}},
-      { item:"연질",      NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:25.3,r26:25,a25:null,why:"정상"}}
-    ],
-    totals: {
-      NBT:{p26:130.35,r26:126,a25:null,why:"액상/젤리: 백양제약 설비 이슈로 3월 납품 지연\n구미: Unilever 부자재 이슈"},
-      BIO:{p26:73,r26:73,a25:null,why:"정제: 에스더포뮬러 멀티비타민 3월 매출 예정(약 5억)"}
-    }
+  {id:"일반제형",num:"⑥",label:"일반제형 Top3",
+   rows:[
+    {item:"액상/젤리",  NBT:{p26:42,   r26:43,  a25:null,why:"정상"},                                         BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"유산균",     NBT:{p26:72.18,r26:68,  a25:null,why:"백양제약 설비 이슈·3월 납품 지연"},                BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"구미",       NBT:{p26:16.17,r26:15,  a25:null,why:"Unilever 부자재 이슈"},                          BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"젤리",       NBT:{p26:null,r26:null, a25:null,why:""},                                             BIO:{p26:25.2,r26:35,  a25:null,why:"계획 초과 달성 (+10억)"}},
+    {item:"정제",       NBT:{p26:null,r26:null, a25:null,why:""},                                             BIO:{p26:23.7,r26:14,  a25:null,why:"에스더포뮬러 멀티비타민 3월 매출 예정(약 5억)"}},
+    {item:"연질",       NBT:{p26:null,r26:null, a25:null,why:""},                                             BIO:{p26:25.3,r26:25,  a25:null,why:"정상"}}
+   ],
+   totals:{
+    NBT:{p26:130.35,r26:126,a25:null,why:"유산균: 백양제약 설비 이슈·3월 납품 지연\n구미: Unilever 부자재 이슈"},
+    BIO:{p26:73,   r26:73,  a25:null,why:"정제: 에스더포뮬러 멀티비타민 3월 매출 예정(약 5억)"}
+   }
   },
-  {
-    id:"기술제형", num:"⑦", label:"기술제형 Top3",
-    rows: [
-      { item:"A;dam",  NBT:{p26:6.75,r26:7,a25:null,why:"정상"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"AEPP",   NBT:{p26:4.5, r26:5,a25:null,why:"정상"}, BIO:{p26:null,r26:null,a25:null,why:""}},
-      { item:"듀얼팩",  NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:3,r26:0,a25:null,why:"종근당 제품 3월 출시 예정 → 1Q 공백"}},
-      { item:"프레스샷", NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:3,r26:1,a25:null,why:"설비 세팅 지연 → 안정화 진행중"}},
-      { item:"솜탭",    NBT:{p26:null,r26:null,a25:null,why:""}, BIO:{p26:2,r26:0,a25:null,why:"생산 준비 중"}}
-    ],
-    totals: {
-      NBT:{p26:11.25,r26:12,a25:null,why:"A;dam·AEPP 정상"},
-      BIO:{p26:8.0, r26:1.0,a25:null,why:"듀얼팩: 종근당 제품 3월 출시 예정\n프레스샷: 설비 세팅 지연"}
-    }
+  {id:"기술제형",num:"⑦",label:"기술제형 Top3",
+   rows:[
+    {item:"A;dam",    NBT:{p26:6.75,r26:7,   a25:null,why:"정상"},                              BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"AEPP",     NBT:{p26:4.5, r26:5,   a25:null,why:"정상 (+1억)"},                       BIO:{p26:null,r26:null,a25:null,why:""}},
+    {item:"듀얼팩",    NBT:{p26:null,r26:null,a25:null,why:""},                                  BIO:{p26:3,   r26:0,   a25:null,why:"종근당 3월 출시 예정·1Q 공백"}},
+    {item:"프레스샷",   NBT:{p26:null,r26:null,a25:null,why:""},                                  BIO:{p26:3,   r26:1,   a25:null,why:"설비 세팅 지연·인삼공사 납품 기회 상실"}},
+    {item:"솜탭",      NBT:{p26:null,r26:null,a25:null,why:""},                                  BIO:{p26:2,   r26:0,   a25:null,why:"생산 준비 중"}}
+   ],
+   totals:{
+    NBT:{p26:11.25,r26:12, a25:null,why:"A;dam·AEPP 정상"},
+    BIO:{p26:8.0,  r26:1.0,a25:null,why:"듀얼팩: 종근당 3월 출시·1Q 공백\n프레스샷: 설비 세팅 지연"}
+   }
   }
 ];
 
-/* KPI 집계 */
-function getKpi(catId, co, month) {
-  var grp = TABLE_GROUPS.find(function(g){ return g.id === catId; });
-  if (!grp) return {};
-  if (month === "YTD") {
-    var mo1 = getKpi(catId, co, "202601");
-    var mo2 = getKpi(catId, co, "202602");
-    return {
-      p26: (mo1.p26||0) + (mo2.p26||0) || null,
-      r26: (mo1.r26||0) + (mo2.r26||0) || null,
-      a25: (mo1.a25||0) + (mo2.a25||0) || null,
-      why: mo2.why || mo1.why || ""
-    };
+/* ══════════════════════════════════════
+   KPI 집계 헬퍼
+══════════════════════════════════════ */
+function getKpi(catId,co,month){
+  var grp=TABLE_GROUPS.find(function(g){return g.id===catId;});
+  if(!grp) return {};
+  if(month==="YTD"){
+    var m1=getKpi(catId,co,"202601"),m2=getKpi(catId,co,"202602");
+    return{p26:(m1.p26||0)+(m2.p26||0)||null,r26:(m1.r26||0)+(m2.r26||0)||null,a25:(m1.a25||0)+(m2.a25||0)||null,why:m2.why||m1.why||""};
   }
-  if (co === "ALL") {
-    var n = grp.totals.NBT; var b = grp.totals.BIO;
-    return {
-      p26: (n.p26||0) + (b.p26||0) || null,
-      r26: (n.r26||0) + (b.r26||0) || null,
-      a25: (n.a25||0) + (b.a25||0) || null,
-      why: (n.why || "") + (b.why ? "\n" + b.why : "")
-    };
+  if(co==="ALL"){
+    var n=grp.totals.NBT,b=grp.totals.BIO;
+    return{p26:(n.p26||0)+(b.p26||0)||null,r26:(n.r26||0)+(b.r26||0)||null,a25:(n.a25||0)+(b.a25||0)||null,why:""};
   }
-  return grp.totals[co] || {};
+  return grp.totals[co]||{};
 }
 
-/* SVG 바 차트 (호버 툴팁 대신 label 표시) */
-function SvgBarChart(props) {
-  var data = props.data;
-  var W=580, H=220, PL=40, PB=52, PT=10, PR=10;
-  var cw=W-PL-PR, ch=H-PT-PB;
+/* ══════════════════════════════════════
+   SVG 차트
+══════════════════════════════════════ */
+function SvgBarChart(props){
+  var data=props.data,selIdx=props.selIdx,onSel=props.onSel;
+  var W=560,H=220,PL=36,PB=52,PT=10,PR=10;
+  var cw=W-PL-PR,ch=H-PT-PB;
   var maxV=1;
-  data.forEach(function(d){ if((d.plan||0)>maxV) maxV=d.plan; if((d.actual||0)>maxV) maxV=d.actual; });
-  var bw=Math.floor(cw/data.length);
-  var bpad=Math.floor(bw*0.12);
-  var bInner=bw-bpad*2;
-  var bEach=Math.floor((bInner-4)/2);
+  data.forEach(function(d){if((d.plan||0)>maxV)maxV=d.plan;if((d.actual||0)>maxV)maxV=d.actual;});
+  var bw=Math.floor(cw/data.length),bpad=Math.floor(bw*0.1),bInner=bw-bpad*2,bEach=Math.floor((bInner-4)/2);
   var stcol={GREEN:"#22c55e",GOOD:"#16a34a",YELLOW:"#eab308",RED:"#ef4444",GRAY:"#475569"};
   var els=[];
   [0,0.5,1].forEach(function(r,i){
@@ -567,134 +539,293 @@ function SvgBarChart(props) {
     var x=PL+i*bw+bpad;
     var ph=d.plan>0?(d.plan/maxV)*ch:0;
     var ah=d.actual>0?(d.actual/maxV)*ch:0;
-    var ratio=(d.plan&&d.actual!=null)?d.actual/d.plan:null;
+    var ratio=d.plan&&d.actual!=null?d.actual/d.plan:null;
     var k=gs(ratio);
-    els.push(e("rect",{key:"bp"+i,x:x,y:PT+ch-ph,width:bEach,height:Math.max(ph,1),fill:"#1e3a5f",rx:2}));
-    els.push(e("rect",{key:"ba"+i,x:x+bEach+4,y:PT+ch-ah,width:bEach,height:Math.max(ah,1),fill:stcol[k],rx:2}));
-    if(d.actual>0){ els.push(e("text",{key:"av"+i,x:x+bEach+4+bEach/2,y:PT+ch-ah-3,textAnchor:"middle",fill:stcol[k],fontSize:8,fontWeight:"bold"},Math.round(d.actual)+"억")); }
-    var lx=x+bInner/2, ly=H-PB+14;
-    els.push(e("text",{key:"bl"+i,x:lx,y:ly,textAnchor:"end",fill:"#94a3b8",fontSize:8.5,transform:"rotate(-30,"+lx+","+ly+")"},d.name));
+    var isSel=selIdx===i;
+    if(isSel) els.push(e("rect",{key:"hl"+i,x:x-2,y:PT,width:bInner+4,height:ch,fill:"rgba(255,255,255,0.05)",rx:4}));
+    els.push(e("rect",{key:"bp"+i,x:x,y:PT+ch-ph,width:bEach,height:Math.max(ph,1),fill:isSel?"#3b82f6":"#1e3a5f",rx:2,style:{cursor:"pointer"},onClick:function(){onSel(i);}}));
+    els.push(e("rect",{key:"ba"+i,x:x+bEach+4,y:PT+ch-ah,width:bEach,height:Math.max(ah,1),fill:stcol[k],rx:2,opacity:isSel?1:0.75,style:{cursor:"pointer"},onClick:function(){onSel(i);}}));
+    if(d.actual>0) els.push(e("text",{key:"av"+i,x:x+bEach+4+bEach/2,y:PT+ch-ah-4,textAnchor:"middle",fill:stcol[k],fontSize:8,fontWeight:"bold"},Math.round(d.actual)));
+    var lx=x+bInner/2,ly=H-PB+13;
+    els.push(e("text",{key:"bl"+i,x:lx,y:ly,textAnchor:"end",fill:isSel?"#e2e8f0":"#94a3b8",fontSize:9,fontWeight:isSel?"bold":"normal",transform:"rotate(-28,"+lx+","+ly+")",style:{cursor:"pointer"},onClick:function(){onSel(i);}},d.num));
   });
-  els.push(e("rect",{key:"l1",x:PL,y:H-14,width:8,height:6,fill:"#1e3a5f",rx:1}));
-  els.push(e("text",{key:"lt1",x:PL+11,y:H-9,fill:"#64748b",fontSize:8},"계획"));
-  els.push(e("rect",{key:"l2",x:PL+38,y:H-14,width:8,height:6,fill:"#22c55e",rx:1}));
-  els.push(e("text",{key:"lt2",x:PL+49,y:H-9,fill:"#64748b",fontSize:8},"실적(Status 색 연동)"));
+  els.push(e("rect",{key:"l1",x:PL,y:H-13,width:7,height:5,fill:"#1e3a5f",rx:1}));
+  els.push(e("text",{key:"lt1",x:PL+9,y:H-9,fill:"#64748b",fontSize:8},"계획"));
+  els.push(e("rect",{key:"l2",x:PL+34,y:H-13,width:7,height:5,fill:"#22c55e",rx:1}));
+  els.push(e("text",{key:"lt2",x:PL+43,y:H-9,fill:"#64748b",fontSize:8},"실적"));
   return e("svg",{viewBox:"0 0 "+W+" "+H,style:{width:"100%",height:H+"px"}},els);
 }
 
-/* SVG 꺾은선 차트 */
-var CAT_COLORS = ["#3b82f6","#ef4444","#10b981","#f59e0b","#8b5cf6","#06b6d4","#f97316"];
-function SvgLineChart(props) {
-  var data = props.data;
-  if(!data||data.length<2) return e("div",{style:{color:"#64748b",fontSize:12,padding:20}},"데이터 부족 (2개월 이상 필요)");
-  var W=580, H=220, PL=40, PB=28, PT=10, PR=80;
-  var cw=W-PL-PR, ch=H-PT-PB;
-  var allVals=[];
-  data.forEach(function(d){
-    CATS.forEach(function(c){var v=d[c.id];if(v!=null&&v>0)allVals.push(v);});
-  });
-  var maxV=allVals.length?Math.max.apply(null,allVals):1;
-  var xStep=cw/(data.length-1);
+function SvgRatioChart(props){
+  var data=props.data;
+  var W=560,H=210,PL=88,PB=24,PT=14,PR=18;
+  var cw=W-PL-PR,ch=H-PT-PB;
+  var nCats=data.length,rowH=Math.floor(ch/nCats);
+  var stcol={GREEN:"#22c55e",GOOD:"#16a34a",YELLOW:"#eab308",RED:"#ef4444",GRAY:"#334155"};
   var els=[];
-  [0,0.5,1].forEach(function(r,i){
-    var y=PT+ch-r*ch;
-    els.push(e("line",{key:"gl"+i,x1:PL,y1:y,x2:W-PR,y2:y,stroke:"#1e293b",strokeWidth:1}));
-    els.push(e("text",{key:"gv"+i,x:PL-3,y:y+4,textAnchor:"end",fill:"#475569",fontSize:9},Math.round(maxV*r)));
-  });
-  data.forEach(function(d,i){
-    els.push(e("text",{key:"xl"+i,x:PL+i*xStep,y:H-PB+14,textAnchor:"middle",fill:"#64748b",fontSize:10},d.name));
-  });
-  CATS.forEach(function(cat,ci){
-    var pts=[];
-    data.forEach(function(d,i){
-      var v=d[cat.id];
-      if(v!=null) pts.push([PL+i*xStep, PT+ch-(v/maxV)*ch]);
+  var x100=PL+cw;
+  els.push(e("line",{key:"ref",x1:x100,y1:PT-4,x2:x100,y2:PT+ch,stroke:"#334155",strokeWidth:1,strokeDasharray:"3 2"}));
+  els.push(e("text",{key:"reft",x:x100,y:PT-6,textAnchor:"middle",fill:"#475569",fontSize:8},"100%"));
+  els.push(e("line",{key:"r50",x1:PL+cw*0.5,y1:PT,x2:PL+cw*0.5,y2:PT+ch,stroke:"#1e293b",strokeWidth:1}));
+  els.push(e("text",{key:"r50t",x:PL+cw*0.5,y:PT-6,textAnchor:"middle",fill:"#334155",fontSize:8},"50%"));
+  data.forEach(function(cat,ci){
+    var baseY=PT+ci*rowH,midY=baseY+rowH/2;
+    els.push(e("text",{key:"nl"+ci,x:PL-5,y:midY+4,textAnchor:"end",fill:"#94a3b8",fontSize:8.5},cat.label));
+    var barH=Math.min(rowH*0.32,9);
+    cat.months.forEach(function(m,mi){
+      var ratio=m.ratio||0;
+      var w=Math.min(ratio,1.5)*cw;
+      var barY=midY-barH/2+(mi-cat.months.length/2+0.5)*(barH+2);
+      var k=gs(ratio);
+      els.push(e("rect",{key:"bg"+ci+"_"+mi,x:PL,y:barY,width:Math.max(w,1),height:barH,fill:stcol[k],rx:2,opacity:0.85}));
+      if(ratio>0.06) els.push(e("text",{key:"rv"+ci+"_"+mi,x:PL+Math.max(w,1)+3,y:barY+barH-1,fill:stcol[k],fontSize:7.5,fontWeight:"bold"},Math.round(ratio*100)+"%"));
+      els.push(e("text",{key:"mn"+ci+"_"+mi,x:2,y:barY+barH-1,fill:"#475569",fontSize:7},m.name));
     });
-    if(pts.length===0) return;
-    var path=pts.map(function(p,i){return(i===0?"M":"L")+p[0].toFixed(1)+","+p[1].toFixed(1);}).join(" ");
-    els.push(e("path",{key:"l"+ci,d:path,fill:"none",stroke:CAT_COLORS[ci],strokeWidth:2}));
-    pts.forEach(function(p,i){els.push(e("circle",{key:"d"+ci+"_"+i,cx:p[0],cy:p[1],r:3,fill:CAT_COLORS[ci]}));});
-    var last=pts[pts.length-1];
-    els.push(e("text",{key:"ll"+ci,x:last[0]+5,y:last[1]+4,fill:CAT_COLORS[ci],fontSize:8},cat.num));
-  });
-  CATS.forEach(function(cat,ci){
-    els.push(e("circle",{key:"leg"+ci,cx:W-PR+4,cy:PT+ci*16+6,r:3,fill:CAT_COLORS[ci]}));
-    els.push(e("text",{key:"legt"+ci,x:W-PR+10,y:PT+ci*16+10,fill:"#94a3b8",fontSize:8},cat.num+" "+cat.label.slice(0,5)));
   });
   return e("svg",{viewBox:"0 0 "+W+" "+H,style:{width:"100%",height:H+"px"}},els);
 }
 
-/* 채널별 성과 미니차트 */
-function ChannelMiniChart(props) {
-  var month=props.month, co=props.co;
-  var src = CHANNEL_DATA[month] || CHANNEL_DATA["202602"];
-  var channels = [];
-  if(co==="ALL"||co==="NBT") { (src.NBT||[]).forEach(function(d){ channels.push({name:d.name+" (NBT)",plan:d.plan,actual:d.actual}); }); }
-  if(co==="ALL"||co==="BIO") { (src.BIO||[]).forEach(function(d){ channels.push({name:d.name+" (BIO)",plan:d.plan,actual:d.actual}); }); }
-  var W=580, H=170, PL=80, PB=20, PT=10, PR=10;
-  var cw=W-PL-PR, ch=H-PT-PB;
+function SvgHorizBar(props){
+  var rows=props.rows||[];
+  if(!rows.length) return e("div",{style:{color:"#64748b",fontSize:11,padding:"16px 0",textAlign:"center"}},"데이터 없음");
+  var W=props.width||300,PL=90,PR=50,PT=12,PB=6;
+  var H=rows.length*26+PT+PB;
+  var cw=W-PL-PR;
   var maxV=1;
-  channels.forEach(function(d){ if((d.plan||0)>maxV) maxV=d.plan; if((d.actual||0)>maxV) maxV=d.actual; });
-  var rowH=Math.floor(ch/channels.length);
+  rows.forEach(function(d){if((d.plan||0)>maxV)maxV=d.plan;if((d.actual||0)>maxV)maxV=d.actual;});
+  var stcol={GREEN:"#22c55e",GOOD:"#16a34a",YELLOW:"#eab308",RED:"#ef4444",GRAY:"#334155"};
+  var x100=PL+cw*(Math.min(maxV,maxV)/maxV);
   var els=[];
-  channels.forEach(function(d,i){
-    var y=PT+i*rowH+rowH/2;
-    var pw=(d.plan||0)/maxV*cw;
-    var aw=(d.actual||0)/maxV*cw;
-    var ratio=d.plan?d.actual/d.plan:null;
-    var k=gs(ratio);
-    var stcol={GREEN:"#22c55e",GOOD:"#16a34a",YELLOW:"#eab308",RED:"#ef4444",GRAY:"#334155"};
-    els.push(e("text",{key:"n"+i,x:PL-5,y:y+4,textAnchor:"end",fill:"#94a3b8",fontSize:8.5},d.name));
-    els.push(e("rect",{key:"bg"+i,x:PL,y:y-4,width:Math.max(pw,1),height:8,fill:"#1e3a5f",rx:2}));
-    els.push(e("rect",{key:"ac"+i,x:PL,y:y-4,width:Math.max(aw,1),height:8,fill:stcol[k],rx:2,opacity:0.85}));
-    els.push(e("text",{key:"pct"+i,x:PL+cw+5,y:y+4,fill:stcol[k],fontSize:8,fontWeight:"bold"},fp(ratio)));
+  els.push(e("line",{key:"ref",x1:x100,y1:PT-4,x2:x100,y2:H-PB,stroke:"#334155",strokeWidth:1,strokeDasharray:"2 2"}));
+  rows.forEach(function(d,i){
+    var y=PT+i*26+4;
+    var pw=d.plan>0?(d.plan/maxV)*cw:0;
+    var aw=d.actual>0?(d.actual/maxV)*cw:0;
+    var k=gs(d.plan?d.actual/d.plan:null);
+    els.push(e("text",{key:"n"+i,x:PL-4,y:y+8,textAnchor:"end",fill:"#94a3b8",fontSize:8.5},d.name));
+    els.push(e("rect",{key:"p"+i,x:PL,y:y,width:Math.max(pw,1),height:6,fill:"#1e3a5f",rx:2}));
+    els.push(e("rect",{key:"a"+i,x:PL,y:y+8,width:Math.max(aw,1),height:6,fill:stcol[k],rx:2}));
+    els.push(e("text",{key:"r"+i,x:PL+Math.max(aw,1)+3,y:y+14,fill:stcol[k],fontSize:7.5,fontWeight:"bold"},fp(d.plan?d.actual/d.plan:null)));
   });
   return e("svg",{viewBox:"0 0 "+W+" "+H,style:{width:"100%",height:H+"px"}},els);
 }
 
-/* KPI 카드 */
-function KpiCard(props) {
-  var ratio=(props.plan&&props.actual!=null)?props.actual/props.plan:null;
-  var k=gs(ratio); var s=ST[k];
-  var pct=Math.min((ratio||0)*100,100);
-  return e("div",{
-    className:"kpi",onClick:props.onClick,
-    style:{borderRadius:12,padding:"11px 9px",border:"2px solid "+s.rg,background:k==="GRAY"?"#0f172a":s.bg,cursor:"pointer",transition:"transform 0.15s"}
-  },
-    e("div",{style:{fontSize:10,fontWeight:700,color:k==="GRAY"?"#64748b":s.tx,marginBottom:3,letterSpacing:"0.01em"}},
-      props.num+" "+props.label),
-    e("div",{style:{fontSize:22,fontWeight:900,color:k==="GRAY"?"#94a3b8":s.tx,fontFamily:"monospace",lineHeight:1}},
-      f(props.actual),e("span",{style:{fontSize:10,fontWeight:400,marginLeft:2}},"억")),
-    e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:5}},
-      e("span",{style:{fontSize:9,color:k==="GRAY"?"#475569":s.tx}},"계획 "+f(props.plan)+"억"),
-      e("span",{style:{fontSize:11,fontWeight:800,padding:"2px 7px",borderRadius:999,background:s.rg,color:"#fff"}},fp(ratio))),
-    e("div",{style:{marginTop:4,background:"rgba(255,255,255,0.15)",borderRadius:99,height:3}},
-      e("div",{style:{width:pct+"%",height:"100%",background:s.rg}}))
+/* ══════════════════════════════════════
+   바차트 선택 상세 (인라인)
+══════════════════════════════════════ */
+function BarDetail(props){
+  if(props.idx==null) return null;
+  var d=props.data[props.idx];
+  if(!d) return null;
+  var ratio=d.plan&&d.actual!=null?d.actual/d.plan:null;
+  var k=gs(ratio),s=ST[k];
+  var diff=d.plan&&d.actual!=null?d.actual-d.plan:null;
+  return e("div",{style:{background:"rgba(15,23,42,0.97)",border:"1px solid #334155",borderRadius:10,padding:"10px 14px",marginTop:8}},
+    e("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:8}},
+      e("span",{style:{fontSize:13,fontWeight:700,color:"#f1f5f9"}},d.num+" "+d.label),
+      e("span",{style:{fontSize:11,fontWeight:800,padding:"2px 8px",borderRadius:999,background:s.rg,color:"#fff"}},s.lb+" "+fp(ratio)),
+      e("span",{style:{fontSize:11,color:diff==null?"#475569":diff>=0?"#4ade80":"#f87171",marginLeft:"auto"}},"차이 "+fdiff(diff)+"억")
+    ),
+    e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:8}},
+      e("div",{style:{background:"#1e293b",borderRadius:7,padding:"7px",textAlign:"center"}},e("div",{style:{fontSize:9,color:"#64748b",marginBottom:1}},"25 실적"),e("div",{style:{fontSize:15,fontWeight:900,color:"#94a3b8",fontFamily:"monospace"}},f(d.a25)+"억")),
+      e("div",{style:{background:"#1e293b",borderRadius:7,padding:"7px",textAlign:"center"}},e("div",{style:{fontSize:9,color:"#64748b",marginBottom:1}},"26 계획"),e("div",{style:{fontSize:15,fontWeight:900,color:"#93c5fd",fontFamily:"monospace"}},f(d.plan)+"억")),
+      e("div",{style:{background:s.bg,border:"1px solid "+s.rg,borderRadius:7,padding:"7px",textAlign:"center"}},e("div",{style:{fontSize:9,color:s.tx,marginBottom:1}},"26 실적"),e("div",{style:{fontSize:15,fontWeight:900,color:s.tx,fontFamily:"monospace"}},f(d.actual)+"억"))
+    ),
+    /* NBT / BIO 분리 */
+    e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}},
+      ["NBT","BIO"].map(function(c){
+        var grp=TABLE_GROUPS.find(function(g){return g.id===d.id;});
+        if(!grp) return null;
+        var t=grp.totals[c];
+        if(!t||(!t.p26&&!t.r26)) return null;
+        var r=t.p26&&t.r26!=null?t.r26/t.p26:null;
+        var k2=gs(r),s2=ST[k2];
+        return e("div",{key:c,style:{background:"#1e293b",borderRadius:7,padding:"8px"}},
+          e("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:5}},
+            e("span",{style:{fontSize:11,fontWeight:700,color:c==="NBT"?"#93c5fd":"#6ee7b7"}},[c," ",f(t.r26),"억"].join("")),
+            e("span",{style:{fontSize:10,fontWeight:800,padding:"1px 6px",borderRadius:999,background:s2.rg,color:"#fff"}},fp(r))
+          ),
+          t.why?e("div",{style:{fontSize:10,color:"#94a3b8",lineHeight:1.6,whiteSpace:"pre-line"}},t.why):null
+        );
+      })
+    )
   );
 }
 
-/* 상세 팝업 */
-function Modal(props) {
+/* ══════════════════════════════════════
+   세부 지표 테이블 — 건기식 합계 기준
+   클릭 시: NBT합계 → NBT세부 / BIO합계 → BIO세부
+══════════════════════════════════════ */
+function DetailTable(props){
+  var month=props.month,onModal=props.onModal;
+  /* 펼침 상태: {grpId: "none"|"top"|"full"} */
+  var os=useState(function(){
+    var init={};TABLE_GROUPS.forEach(function(g){init[g.id]="none";});return init;
+  });
+  var open=os[0],setOpen=os[1];
+  function cycleOpen(id){
+    var cur=open[id];
+    var nx=Object.assign({},open);
+    nx[id]=cur==="none"?"top":cur==="top"?"full":"none";
+    setOpen(nx);
+  }
+
+  function getTotal(grp,co){
+    var t=grp.totals[co];
+    if(!t) return null;
+    if(month==="YTD"){
+      var k1=getKpi(grp.id,co,"202601"),k2=getKpi(grp.id,co,"202602");
+      return{p26:(k1.p26||0)+(k2.p26||0)||null,r26:(k1.r26||0)+(k2.r26||0)||null,a25:t.a25,why:t.why};
+    }
+    return t;
+  }
+
+  var cols=["지표 (건기식 합계)","26계획","26실적","전년비","계획비","차이","Status","NBT","BIO","세부"];
+  var rows=[];
+
+  TABLE_GROUPS.forEach(function(grp){
+    var tn=getTotal(grp,"NBT")||{};
+    var tb=getTotal(grp,"BIO")||{};
+    var tp26=(tn.p26||0)+(tb.p26||0)||null;
+    var tr26=(tn.r26||0)+(tb.r26||0)||null;
+    var ta25=(tn.a25||0)+(tb.a25||0)||null;
+    var ratio=tp26&&tr26!=null?tr26/tp26:null;
+    var diff=tp26&&tr26!=null?tr26-tp26:null;
+    var yoy=ta25&&tr26!=null?tr26/ta25:null;
+    var k=gs(ratio),s=ST[k];
+    var st=open[grp.id];
+
+    /* 건기식 합계 행 */
+    rows.push({type:"total",grp:grp,tp26:tp26,tr26:tr26,ta25:ta25,ratio:ratio,diff:diff,yoy:yoy,k:k,s:s,
+               tn:tn,tb:tb,st:st});
+
+    /* NBT 합계 행 */
+    if(st==="top"||st==="full"){
+      if(tn.p26||tn.r26){
+        var rn=tn.p26&&tn.r26!=null?tn.r26/tn.p26:null;
+        var dn=tn.p26&&tn.r26!=null?tn.r26-tn.p26:null;
+        rows.push({type:"co",grp:grp,co:"NBT",t:tn,ratio:rn,diff:dn,k:gs(rn),s:ST[gs(rn)]});
+      }
+      /* NBT 세부 */
+      if(st==="full"){
+        grp.rows.forEach(function(r){
+          var rv=r.NBT;if(!rv||(!rv.p26&&!rv.r26))return;
+          var rr=rv.p26&&rv.r26!=null?rv.r26/rv.p26:null;
+          rows.push({type:"det",grp:grp,co:"NBT",rv:rv,item:r.item,ratio:rr,k:gs(rr),s:ST[gs(rr)]});
+        });
+      }
+      /* BIO 합계 행 */
+      if(tb.p26||tb.r26){
+        var rb=tb.p26&&tb.r26!=null?tb.r26/tb.p26:null;
+        var db=tb.p26&&tb.r26!=null?tb.r26-tb.p26:null;
+        rows.push({type:"co",grp:grp,co:"BIO",t:tb,ratio:rb,diff:db,k:gs(rb),s:ST[gs(rb)]});
+      }
+      /* BIO 세부 */
+      if(st==="full"){
+        grp.rows.forEach(function(r){
+          var rv=r.BIO;if(!rv||(!rv.p26&&!rv.r26))return;
+          var rr=rv.p26&&rv.r26!=null?rv.r26/rv.p26:null;
+          rows.push({type:"det",grp:grp,co:"BIO",rv:rv,item:r.item,ratio:rr,k:gs(rr),s:ST[gs(rr)]});
+        });
+      }
+    }
+  });
+
+  return e("table",{style:{width:"100%",borderCollapse:"collapse",fontSize:12}},
+    e("thead",null,e("tr",{style:{background:"#1e293b"}},
+      cols.map(function(h){
+        var isR=["26계획","26실적","전년비","계획비","차이"].indexOf(h)>-1;
+        return e("th",{key:h,style:{padding:"8px 10px",textAlign:isR?"right":"left",fontSize:10,fontWeight:700,color:"#64748b",whiteSpace:"nowrap"}},h);
+      })
+    )),
+    e("tbody",null,rows.map(function(row,i){
+      if(row.type==="total"){
+        var s=row.s;
+        var nratio=row.tn.p26&&row.tn.r26!=null?row.tn.r26/row.tn.p26:null;
+        var bratio=row.tb.p26&&row.tb.r26!=null?row.tb.r26/row.tb.p26:null;
+        var nk=gs(nratio),bk=gs(bratio);
+        var stcol={GREEN:"#22c55e",GOOD:"#16a34a",YELLOW:"#eab308",RED:"#ef4444",GRAY:"#475569"};
+        var stIcon={none:"▸",top:"▾",full:"▾▾"};
+        return e("tr",{key:i,onClick:function(){cycleOpen(row.grp.id);},
+          style:{borderBottom:"1px solid #1e293b",background:"rgba(30,41,59,0.6)",cursor:"pointer",borderLeft:"3px solid "+s.rg}},
+          e("td",{style:{padding:"8px 10px",fontWeight:700,color:"#f1f5f9",whiteSpace:"nowrap"}},
+            e("span",{style:{marginRight:4,color:"#64748b",fontSize:11}},stIcon[row.st]),
+            row.grp.num," ",row.grp.label),
+          e("td",{style:{padding:"8px 10px",textAlign:"right",color:"#93c5fd",fontFamily:"monospace"}},f(row.tp26)),
+          e("td",{style:{padding:"8px 10px",textAlign:"right",fontWeight:700,fontFamily:"monospace",color:s.rg}},f(row.tr26)),
+          e("td",{style:{padding:"8px 10px",textAlign:"right",fontSize:11,fontFamily:"monospace",color:row.yoy==null?"#475569":row.yoy>=1?"#4ade80":"#f87171"}},row.yoy==null?"–":fp(row.yoy)),
+          e("td",{style:{padding:"8px 10px",textAlign:"right"}},e("span",{style:{fontSize:11,fontWeight:800,padding:"1px 7px",borderRadius:999,background:s.bg,color:s.tx}},fp(row.ratio))),
+          e("td",{style:{padding:"8px 10px",textAlign:"right",fontSize:11,fontFamily:"monospace",color:row.diff==null?"#475569":row.diff>=0?"#4ade80":"#f87171"}},row.diff!=null?(row.diff>=0?"+":"")+f(row.diff)+"억":"–"),
+          e("td",{style:{padding:"8px 10px",textAlign:"center"}},e("span",{style:{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:999,background:s.bg,color:s.tx}},s.lb)),
+          /* NBT mini */
+          e("td",{style:{padding:"8px 10px",textAlign:"right"}},
+            row.tn.r26!=null?e("span",{style:{fontSize:10,fontWeight:700,color:stcol[nk]}},f(row.tn.r26)+"억 "+fp(nratio)):e("span",{style:{color:"#334155"}},"–")),
+          /* BIO mini */
+          e("td",{style:{padding:"8px 10px",textAlign:"right"}},
+            row.tb.r26!=null?e("span",{style:{fontSize:10,fontWeight:700,color:stcol[bk]}},f(row.tb.r26)+"억 "+fp(bratio)):e("span",{style:{color:"#334155"}},"–")),
+          e("td",{style:{padding:"8px 10px",textAlign:"center",fontSize:10,color:"#475569"}},
+            row.st==="none"?"클릭":row.st==="top"?"합계▾":"세부▾▾")
+        );
+      }
+      if(row.type==="co"){
+        var s=row.s;
+        return e("tr",{key:i,
+          onClick:function(){if(row.t.why)onModal({p26:row.t.p26,r26:row.t.r26,a25:row.t.a25,why:row.t.why,ratio:row.ratio,diff:row.diff,yoy:null,co:row.co,num:row.grp.num,label:row.grp.label,item:""});},
+          style:{borderBottom:"1px solid #1e293b",background:"rgba(20,30,48,0.7)",cursor:"pointer",borderLeft:"3px solid "+s.rg}},
+          e("td",{style:{padding:"6px 10px 6px 22px",fontWeight:700}},
+            e("span",{style:{fontSize:10,fontWeight:700,padding:"2px 5px",borderRadius:4,marginRight:6,background:row.co==="NBT"?"rgba(59,130,246,0.18)":"rgba(16,185,129,0.18)",color:row.co==="NBT"?"#93c5fd":"#6ee7b7"}},row.co),
+            row.grp.label+" 합계"),
+          e("td",{style:{padding:"6px 10px",textAlign:"right",color:"#93c5fd",fontFamily:"monospace",fontSize:11}},f(row.t.p26)),
+          e("td",{style:{padding:"6px 10px",textAlign:"right",fontWeight:700,fontFamily:"monospace",fontSize:11,color:s.rg}},f(row.t.r26)),
+          e("td",{style:{padding:"6px 10px",textAlign:"right",fontSize:11,fontFamily:"monospace",color:"#64748b"}},"—"),
+          e("td",{style:{padding:"6px 10px",textAlign:"right"}},e("span",{style:{fontSize:11,fontWeight:800,padding:"1px 6px",borderRadius:999,background:s.bg,color:s.tx}},fp(row.ratio))),
+          e("td",{style:{padding:"6px 10px",textAlign:"right",fontSize:11,fontFamily:"monospace",color:row.diff==null?"#475569":row.diff>=0?"#4ade80":"#f87171"}},row.diff!=null?(row.diff>=0?"+":"")+f(row.diff)+"억":"–"),
+          e("td",{style:{padding:"6px 10px",textAlign:"center"}},e("span",{style:{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:999,background:s.bg,color:s.tx}},s.lb)),
+          e("td",{colSpan:3,style:{padding:"6px 10px",fontSize:10,color:"#64748b"}}," ← 📋 클릭시 증감사유")
+        );
+      }
+      /* detail */
+      var s=row.s;
+      var diff=row.rv.p26&&row.rv.r26!=null?row.rv.r26-row.rv.p26:null;
+      return e("tr",{key:i,
+        onClick:function(){if(row.rv.why)onModal({p26:row.rv.p26,r26:row.rv.r26,a25:row.rv.a25,why:row.rv.why,ratio:row.ratio,diff:diff,yoy:null,co:row.co,num:row.grp.num,label:row.grp.label,item:row.item});},
+        style:{borderBottom:"1px solid #1e2030",background:"rgba(10,15,30,0.5)",cursor:row.rv.why?"pointer":"default",borderLeft:"3px solid #1e293b"}},
+        e("td",{style:{padding:"5px 10px 5px 36px",color:"#94a3b8",fontStyle:"italic"}},
+          e("span",{style:{fontSize:10,fontWeight:700,padding:"1px 4px",borderRadius:3,marginRight:5,background:row.co==="NBT"?"rgba(59,130,246,0.1)":"rgba(16,185,129,0.1)",color:row.co==="NBT"?"#6b9fd4":"#5aab8a"}},row.co),
+          row.item),
+        e("td",{style:{padding:"5px 10px",textAlign:"right",color:"#64748b",fontFamily:"monospace",fontSize:11}},f(row.rv.p26)),
+        e("td",{style:{padding:"5px 10px",textAlign:"right",fontFamily:"monospace",fontSize:11,color:s.rg}},f(row.rv.r26)),
+        e("td",{style:{padding:"5px 10px",textAlign:"right",fontSize:11,fontFamily:"monospace",color:"#64748b"}},"—"),
+        e("td",{style:{padding:"5px 10px",textAlign:"right"}},e("span",{style:{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:999,background:s.bg,color:s.tx}},fp(row.ratio))),
+        e("td",{style:{padding:"5px 10px",textAlign:"right",fontSize:11,fontFamily:"monospace",color:diff==null?"#475569":diff>=0?"#4ade80":"#f87171"}},diff!=null?(diff>=0?"+":"")+f(diff)+"억":"–"),
+        e("td",{style:{padding:"5px 10px",textAlign:"center"}},e("span",{style:{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:999,background:s.bg,color:s.tx}},s.lb)),
+        e("td",{colSpan:3,style:{padding:"5px 10px",fontSize:10,color:"#64748b"}},row.rv.why?"\uD83D\uDCCB "+row.rv.why.split("\n")[0].slice(0,30)+(row.rv.why.length>30?"…":""):"—")
+      );
+    }))
+  );
+}
+
+/* ══════════════════════════════════════
+   모달
+══════════════════════════════════════ */
+function Modal(props){
   if(!props.data) return null;
-  var d=props.data, k=gs(d.ratio), s=ST[k];
-  return e("div",{
-    style:{position:"fixed",inset:0,background:"rgba(5,10,25,0.85)",backdropFilter:"blur(6px)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",padding:16},
-    onClick:props.onClose
-  },
+  var d=props.data,k=gs(d.ratio),s=ST[k];
+  return e("div",{style:{position:"fixed",inset:0,background:"rgba(5,10,25,0.85)",backdropFilter:"blur(6px)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",padding:16},onClick:props.onClose},
     e("div",{onClick:function(ev){ev.stopPropagation();},style:{background:"#fff",borderRadius:18,maxWidth:460,width:"100%",overflow:"hidden",boxShadow:"0 25px 60px rgba(0,0,0,0.5)"}},
-      e("div",{style:{borderTop:"5px solid "+s.rg,padding:"16px 20px 0"}},
+      e("div",{style:{borderTop:"5px solid "+s.rg,padding:"15px 20px 0"}},
         e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}},
           e("div",null,
             e("div",{style:{fontSize:10,color:"#64748b",marginBottom:2}},d.co+" · "+d.num+" "+d.label),
             e("div",{style:{fontSize:16,fontWeight:900,color:"#0f172a"}},d.item||d.label)),
           e("button",{onClick:props.onClose,style:{fontSize:22,color:"#94a3b8",background:"none",border:"none",cursor:"pointer"}},"×"))),
       e("div",{style:{padding:"12px 20px 18px"}},
-        e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:7,marginBottom:9}},
+        e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:7,marginBottom:8}},
           e("div",{style:{background:"#f8fafc",borderRadius:9,padding:8,textAlign:"center"}},e("div",{style:{fontSize:9,color:"#64748b",marginBottom:1}},"25 실적"),e("div",{style:{fontSize:16,fontWeight:900,color:"#0f172a",fontFamily:"monospace"}},f(d.a25)+"억")),
           e("div",{style:{background:"#f8fafc",borderRadius:9,padding:8,textAlign:"center"}},e("div",{style:{fontSize:9,color:"#64748b",marginBottom:1}},"26 계획"),e("div",{style:{fontSize:16,fontWeight:900,color:"#0f172a",fontFamily:"monospace"}},f(d.p26)+"억")),
-          e("div",{style:{background:"#f8fafc",borderRadius:9,padding:8,textAlign:"center"}},e("div",{style:{fontSize:9,color:"#64748b",marginBottom:1}},"26 실적"),e("div",{style:{fontSize:16,fontWeight:900,color:s.rg,fontFamily:"monospace"}},f(d.r26)+"억"))
+          e("div",{style:{background:"#f8fafc",borderRadius:9,padding:8,textAlign:"center"}},e("div",{style:{fontSize:9,color:s.tx,marginBottom:1}},"26 실적"),e("div",{style:{fontSize:16,fontWeight:900,color:s.rg,fontFamily:"monospace"}},f(d.r26)+"억"))
         ),
-        e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:7,marginBottom:9}},
+        e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:7,marginBottom:8}},
           e("div",{style:{background:s.bg,border:"2px solid "+s.rg,borderRadius:9,padding:8,textAlign:"center"}},e("div",{style:{fontSize:9,color:s.tx,fontWeight:700}},"계획비"),e("div",{style:{fontSize:18,fontWeight:900,color:s.tx}},fp(d.ratio))),
           e("div",{style:{background:"#f8fafc",borderRadius:9,padding:8,textAlign:"center"}},e("div",{style:{fontSize:9,color:"#64748b"}},"전년비"),e("div",{style:{fontSize:18,fontWeight:900,color:"#0f172a"}},fp(d.yoy))),
           e("div",{style:{background:"#f8fafc",borderRadius:9,padding:8,textAlign:"center"}},e("div",{style:{fontSize:9,color:"#64748b"}},"차이금액"),e("div",{style:{fontSize:16,fontWeight:900,color:d.diff==null?"#94a3b8":d.diff>=0?"#16a34a":"#dc2626"}},fdiff(d.diff)+"억"))
@@ -707,228 +838,200 @@ function Modal(props) {
   );
 }
 
-/* 세부 테이블 — 접힘/펼침 그룹 */
-function DetailTable(props) {
-  var co=props.co, month=props.month, onModal=props.onModal;
-  var initOpen = {};
-  TABLE_GROUPS.forEach(function(g){ initOpen[g.id]=false; });
-  var openState=useState(initOpen);
-  var open=openState[0], setOpen=openState[1];
-  function toggle(id){
-    var nx=Object.assign({},open); nx[id]=!nx[id]; setOpen(nx);
-  }
-  function makeRow(item,p26,r26,a25,why,isTotal,indent){
-    var ratio=p26&&r26!=null?r26/p26:null;
-    var yoy=a25&&r26!=null?r26/a25:null;
-    var diff=r26!=null&&p26!=null?r26-p26:null;
-    var k=gs(ratio); var s=ST[k];
-    return {p26:p26,r26:r26,a25:a25,why:why,ratio:ratio,yoy:yoy,diff:diff,k:k,s:s,item:item,isTotal:isTotal,indent:indent};
-  }
-  var rows=[];
-  TABLE_GROUPS.forEach(function(grp){
-    var tot = grp.totals;
-    var coList = co==="ALL"?["NBT","BIO"]:[co];
-    coList.forEach(function(c){
-      var t=tot[c];
-      if(!t||(!t.p26&&!t.r26)) return;
-      var rd=makeRow(grp.num+" "+grp.label,t.p26,t.r26,t.a25,t.why,true,false);
-      rd.grpId=grp.id; rd.co=c; rd.num=grp.num; rd.label=grp.label;
-      rows.push({type:"header",grp:grp,co:c,rd:rd});
-      if(open[grp.id]){
-        grp.rows.forEach(function(r){
-          var rv=r[c];
-          if(!rv||(!rv.p26&&!rv.r26)) return;
-          var dr=makeRow(r.item,rv.p26,rv.r26,rv.a25,rv.why,false,true);
-          dr.grpId=grp.id; dr.co=c; dr.num=grp.num; dr.label=grp.label;
-          rows.push({type:"detail",grp:grp,co:c,rd:dr});
-        });
-      }
-    });
-  });
-
-  var THcols=["계열사","지표/세부항목","26계획","26실적","전년비","계획비","차이","Status","사유"];
-  return e("table",{style:{width:"100%",borderCollapse:"collapse",fontSize:12}},
-    e("thead",null,e("tr",{style:{background:"#1e293b"}},
-      THcols.map(function(h){ return e("th",{key:h,style:{padding:"8px 10px",textAlign:["26계획","26실적","전년비","계획비","차이"].indexOf(h)>-1?"right":"left",fontSize:10,fontWeight:700,color:"#64748b",whiteSpace:"nowrap"}},h); })
-    )),
-    e("tbody",null,
-      rows.map(function(row,i){
-        var rd=row.rd; var s=rd.s; var isH=row.type==="header";
-        return e("tr",{
-          key:i,
-          onClick:isH?function(){toggle(row.grp.id);}:function(){if(rd.why)onModal(rd);},
-          style:{
-            borderBottom:"1px solid #1e293b",
-            background:isH?"rgba(30,41,59,0.6)":"rgba(15,23,42,0.3)",
-            cursor:"pointer"
-          }
-        },
-          e("td",{style:{padding:"7px 10px"}},
-            e("span",{style:{fontSize:10,fontWeight:700,padding:"2px 5px",borderRadius:4,background:row.co==="NBT"?"rgba(59,130,246,0.18)":"rgba(16,185,129,0.18)",color:row.co==="NBT"?"#93c5fd":"#6ee7b7"}},row.co)
-          ),
-          e("td",{style:{padding:"7px 10px",color:isH?"#f1f5f9":"#cbd5e1",fontWeight:isH?700:400,paddingLeft:rd.indent?"22px":"10px"}},
-            isH?e("span",null,open[row.grp.id]?"▾ ":"▸ ",rd.item):rd.item
-          ),
-          e("td",{style:{padding:"7px 10px",textAlign:"right",color:"#93c5fd",fontFamily:"monospace",fontSize:11}},f(rd.p26)),
-          e("td",{style:{padding:"7px 10px",textAlign:"right",fontWeight:isH?700:400,fontFamily:"monospace",fontSize:11,color:s.rg}},f(rd.r26)),
-          e("td",{style:{padding:"7px 10px",textAlign:"right",fontSize:11,fontFamily:"monospace",color:rd.yoy==null?"#475569":rd.yoy>=1?"#4ade80":"#f87171"}},
-            rd.yoy==null?"–":fp(rd.yoy)
-          ),
-          e("td",{style:{padding:"7px 10px",textAlign:"right"}},
-            e("span",{style:{fontSize:11,fontWeight:800,padding:"1px 7px",borderRadius:999,background:s.bg,color:s.tx}},fp(rd.ratio))
-          ),
-          e("td",{style:{padding:"7px 10px",textAlign:"right",fontSize:11,fontFamily:"monospace",color:rd.diff==null?"#475569":rd.diff>=0?"#4ade80":"#f87171"}},
-            rd.diff!=null?(rd.diff>=0?"+":"")+f(rd.diff)+"억":"–"
-          ),
-          e("td",{style:{padding:"7px 10px",textAlign:"center"}},
-            e("span",{style:{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:999,background:s.bg,color:s.tx}},s.lb)
-          ),
-          e("td",{style:{padding:"7px 10px",textAlign:"center"}},
-            rd.why?e("span",{style:{cursor:"pointer",fontSize:14,opacity:0.8},onClick:function(ev){ev.stopPropagation();onModal(rd);}},"📋")
-                  :e("span",{style:{color:"#334155"}},"–")
-          )
-        );
-      })
+/* ══════════════════════════════════════
+   KPI 카드
+══════════════════════════════════════ */
+function KpiCard(props){
+  var ratio=props.plan&&props.actual!=null?props.actual/props.plan:null;
+  var k=gs(ratio),s=ST[k];
+  var pct=Math.min((ratio||0)*100,100);
+  return e("div",{className:"kpi",onClick:props.onClick,
+    style:{borderRadius:12,padding:"10px 8px",border:"2px solid "+s.rg,background:k==="GRAY"?"#0f172a":s.bg}},
+    e("div",{style:{fontSize:9.5,fontWeight:700,color:k==="GRAY"?"#64748b":s.tx,marginBottom:2}},props.num+" "+props.shortLabel),
+    e("div",{style:{fontSize:20,fontWeight:900,color:k==="GRAY"?"#94a3b8":s.tx,fontFamily:"monospace",lineHeight:1}},
+      f(props.actual),e("span",{style:{fontSize:10,fontWeight:400,marginLeft:2}},"억")),
+    e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:4}},
+      e("span",{style:{fontSize:9,color:k==="GRAY"?"#475569":s.tx}},"계획 "+f(props.plan)+"억"),
+      e("span",{style:{fontSize:11,fontWeight:800,padding:"1px 6px",borderRadius:999,background:s.rg,color:"#fff"}},fp(ratio))),
+    e("div",{style:{display:"flex",alignItems:"center",gap:6,marginTop:3}},
+      e("div",{style:{flex:1,background:"rgba(255,255,255,0.15)",borderRadius:99,height:2.5}},
+        e("div",{style:{width:pct+"%",height:"100%",background:s.rg}})),
+      e("span",{style:{fontSize:9,fontWeight:700,color:s.tx,flexShrink:0}},s.lb)
     )
   );
 }
 
-/* ── 메인 앱 ── */
-function App() {
+/* ══════════════════════════════════════
+   메인 앱
+══════════════════════════════════════ */
+function App(){
   var ms=useState("202602"); var month=ms[0],setMonth=ms[1];
-  var cs=useState("ALL");   var co=cs[0],setCo=cs[1];
-  var mods=useState(null);  var modal=mods[0],setModal=mods[1];
-  var ts=useState("bar");   var chartTab=ts[0],setChartTab=ts[1];
+  var ins=useState("전체");   var insTab=ins[0],setInsTab=ins[1];
+  var mods=useState(null);   var modal=mods[0],setModal=mods[1];
+  var sel=useState(null);    var selIdx=sel[0],setSelIdx=sel[1];
 
+  /* KPI는 항상 건기식 합계 */
   var kpis=useMemo(function(){
-    return CATS.map(function(c){ return Object.assign({},c,getKpi(c.id,co,month)); });
-  },[month,co]);
+    return CATS.map(function(c){return Object.assign({},c,getKpi(c.id,"ALL",month));});
+  },[month]);
 
-  var barData=kpis.map(function(k){ return {name:k.num+" "+k.label.slice(0,5),plan:k.p26||0,actual:k.r26||0}; });
+  var barData=kpis.map(function(k){
+    return{num:k.num,id:k.id,label:k.label,plan:k.p26||0,actual:k.r26||0,a25:k.a25,why:k.why};
+  });
 
-  var trendData=useMemo(function(){
-    if(month==="YTD") return [];
+  var ratioData=useMemo(function(){
     var months=["202601","202602"];
-    return months.map(function(mv){
-      var ml=MO.find(function(o){return o.v===mv;}).l;
-      var obj={name:ml};
-      CATS.forEach(function(c){ var kv=getKpi(c.id,co,mv); obj[c.id]=kv.r26||null; });
-      return obj;
+    return CATS.map(function(c){
+      return{label:c.num,months:months.map(function(mv){
+        var k=getKpi(c.id,"ALL",mv);
+        return{name:MO.find(function(o){return o.v===mv;}).l,ratio:k.p26&&k.r26!=null?k.r26/k.p26:null};
+      })};
     });
-  },[month,co]);
+  },[]);
+
+  /* 신유통 채널 rows */
+  var chRows=useMemo(function(){
+    var grp=TABLE_GROUPS.find(function(g){return g.id==="신유통";});
+    if(!grp) return[];
+    var rows=[];
+    grp.rows.forEach(function(r){
+      ["NBT","BIO"].forEach(function(c){
+        var rv=r[c];
+        if(rv&&(rv.p26||rv.r26)) rows.push({name:r.item+" ("+c+")",plan:rv.p26||0,actual:rv.r26||0});
+      });
+    });
+    return rows;
+  },[]);
+
+  /* 해외 rows */
+  var overseasRows=useMemo(function(){
+    var rows=[];
+    ["중국로컬","글로벌사"].forEach(function(id){
+      ["NBT","BIO"].forEach(function(c){
+        var k=getKpi(id,c,month);
+        if(k.p26||k.r26){
+          var grp=TABLE_GROUPS.find(function(g){return g.id===id;});
+          rows.push({name:id+" ("+c+")",plan:k.p26||0,actual:k.r26||0});
+        }
+      });
+    });
+    return rows;
+  },[month]);
 
   var ml=MO.find(function(o){return o.v===month;}).l;
+  var insSrc=INSIGHTS[insTab]||INSIGHTS["전체"];
 
   return e("div",{style:{minHeight:"100vh",background:"#0a0f1e",color:"#e2e8f0",fontFamily:"'Pretendard','Noto Sans KR',system-ui,sans-serif"}},
 
     /* HEADER */
     e("div",{style:{borderBottom:"1px solid #1e293b",padding:"9px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(15,23,42,0.98)",position:"sticky",top:0,zIndex:50}},
       e("div",{style:{display:"flex",alignItems:"center",gap:10}},
-        e("div",{style:{width:32,height:32,borderRadius:8,background:"#3b82f6",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,color:"#fff",fontSize:13}},"C"),
+        e("div",{style:{width:30,height:30,borderRadius:8,background:"#3b82f6",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,color:"#fff",fontSize:12}},"C"),
         e("div",null,
-          e("div",{style:{fontWeight:900,fontSize:14,color:"#f1f5f9"}},"COSMAX BTI"),
+          e("div",{style:{fontWeight:900,fontSize:13,color:"#f1f5f9"}},"COSMAX BTI"),
           e("div",{style:{fontSize:10,color:"#475569"}},"'26년 공통전략지표 경영실적 대시보드"))),
-      /* CONTROLS */
-      e("div",{style:{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}},
+      e("div",{style:{display:"flex",alignItems:"center",gap:6}},
         e("span",{style:{fontSize:10,color:"#64748b"}},"기준"),
         e("div",{style:{display:"flex",borderRadius:7,overflow:"hidden",border:"1px solid #334155"}},
-          MO.map(function(o){ return e("button",{key:o.v,onClick:function(){setMonth(o.v);},style:{padding:"4px 10px",fontSize:11,fontWeight:700,cursor:"pointer",border:"none",background:month===o.v?"#3b82f6":"#1e293b",color:month===o.v?"#fff":"#64748b",whiteSpace:"nowrap"}},o.l); })
-        ),
-        e("div",{style:{width:1,background:"#334155",height:20}}),
-        e("div",{style:{display:"flex",borderRadius:7,overflow:"hidden",border:"1px solid #334155"}},
-          [{v:"ALL",l:"전체"},{v:"NBT",l:"NBT"},{v:"BIO",l:"BIO"}].map(function(o){ return e("button",{key:o.v,onClick:function(){setCo(o.v);},style:{padding:"4px 10px",fontSize:11,fontWeight:700,cursor:"pointer",border:"none",background:co===o.v?"#3b82f6":"#1e293b",color:co===o.v?"#fff":"#64748b"}},o.l); })
-        ),
-        e("span",{style:{fontSize:10,color:"#475569",padding:"4px 10px",background:"#1e293b",borderRadius:7,border:"1px solid #334155"}},ml+" 확정실적")
+          MO.map(function(o){return e("button",{key:o.v,onClick:function(){setMonth(o.v);setSelIdx(null);},style:{padding:"4px 10px",fontSize:11,fontWeight:700,cursor:"pointer",border:"none",background:month===o.v?"#3b82f6":"#1e293b",color:month===o.v?"#fff":"#64748b",whiteSpace:"nowrap"}},o.l);})),
+        e("span",{style:{fontSize:10,color:"#475569",padding:"4px 9px",background:"#1e293b",borderRadius:7,border:"1px solid #334155"}},ml+" · 건기식(NBT+BIO) 기준")
       )
     ),
 
-    e("div",{style:{padding:"14px 18px",maxWidth:1400,margin:"0 auto"}},
+    e("div",{style:{padding:"12px 18px",maxWidth:1400,margin:"0 auto"}},
 
-      /* ZONE 1 — 인사이트 배너 */
-      e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:14}},
-        e("div",{style:{background:"rgba(21,128,61,0.08)",border:"1px solid rgba(21,128,61,0.25)",borderRadius:12,padding:"11px 14px",borderLeft:"4px solid #22c55e"}},
-          e("div",{style:{fontSize:10,fontWeight:700,color:"#4ade80",marginBottom:7,letterSpacing:"0.06em"}},"● 주요 성과"),
-          INSIGHTS.wins.map(function(w,i){ return e("div",{key:i,style:{fontSize:11,color:"#86efac",lineHeight:1.65,marginBottom:3}},w); })
+      /* ZONE 1 인사이트 — 전체/NBT/BIO 탭 */
+      e("div",{style:{marginBottom:12}},
+        e("div",{style:{display:"flex",gap:0,borderBottom:"1px solid #1e293b",marginBottom:0}},
+          ["전체","NBT","BIO"].map(function(tab){
+            var active=insTab===tab;
+            return e("button",{key:tab,onClick:function(){setInsTab(tab);},style:{padding:"5px 16px",fontSize:11,fontWeight:700,cursor:"pointer",border:"none",borderBottom:active?"2px solid #3b82f6":"2px solid transparent",background:"transparent",color:active?"#60a5fa":"#475569",marginBottom:-1}},tab+" 관점");
+          })
         ),
-        e("div",{style:{background:"rgba(185,28,28,0.08)",border:"1px solid rgba(185,28,28,0.25)",borderRadius:12,padding:"11px 14px",borderLeft:"4px solid #ef4444"}},
-          e("div",{style:{fontSize:10,fontWeight:700,color:"#f87171",marginBottom:7,letterSpacing:"0.06em"}},"▼ 주요 리스크"),
-          INSIGHTS.risks.map(function(r,i){ return e("div",{key:i,style:{fontSize:11,color:"#fca5a5",lineHeight:1.65,marginBottom:3}},r); })
+        e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,paddingTop:8}},
+          e("div",{style:{background:"rgba(21,128,61,0.08)",border:"1px solid rgba(21,128,61,0.22)",borderRadius:10,padding:"10px 13px",borderLeft:"3px solid #22c55e"}},
+            e("div",{style:{fontSize:10,fontWeight:700,color:"#4ade80",marginBottom:5,letterSpacing:"0.05em"}},"● 주요 성과 — "+insTab+" 관점"),
+            insSrc.wins.map(function(w,i){return e("div",{key:i,style:{fontSize:11,color:"#86efac",lineHeight:1.65,marginBottom:3}},w);})
+          ),
+          e("div",{style:{background:"rgba(185,28,28,0.08)",border:"1px solid rgba(185,28,28,0.22)",borderRadius:10,padding:"10px 13px",borderLeft:"3px solid #ef4444"}},
+            e("div",{style:{fontSize:10,fontWeight:700,color:"#f87171",marginBottom:5,letterSpacing:"0.05em"}},"▼ 주요 리스크 — "+insTab+" 관점"),
+            insSrc.risks.map(function(r,i){return e("div",{key:i,style:{fontSize:11,color:"#fca5a5",lineHeight:1.65,marginBottom:3}},r);})
+          )
         )
       ),
 
-      /* ZONE 3 — KPI 카드 7개 */
-      e("div",{style:{fontSize:10,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}},"핵심지표 — "+ml+" 계획비 기준 · 카드 클릭시 상세"),
-      e("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:7,marginBottom:14}},
+      /* ZONE 3 KPI 카드 — 건기식 합계 */
+      e("div",{style:{fontSize:10,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:7}},"핵심지표 — 건기식(NBT+BIO) 합계 · "+ml+" 계획비 기준"),
+      e("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:6,marginBottom:12}},
         kpis.map(function(k){
           return e(KpiCard,{
-            key:k.id, num:k.num, label:k.label.replace(" 매출","").replace(" Top3",""),
-            plan:k.p26, actual:k.r26,
-            onClick:function(){ if(k.p26||k.r26){ var rd={p26:k.p26,r26:k.r26,a25:k.a25,why:k.why,ratio:k.p26&&k.r26!=null?k.r26/k.p26:null,yoy:k.a25&&k.r26!=null?k.r26/k.a25:null,diff:k.p26&&k.r26!=null?k.r26-k.p26:null,co:co,num:k.num,label:k.label,item:""}; setModal(rd); } }
+            key:k.id,num:k.num,
+            shortLabel:k.label.replace(" 매출","").replace(" Top3",""),
+            plan:k.p26,actual:k.r26,
+            onClick:function(){if(k.p26||k.r26){var ratio=k.p26&&k.r26!=null?k.r26/k.p26:null;setModal({p26:k.p26,r26:k.r26,a25:k.a25,why:"",ratio:ratio,yoy:null,diff:k.p26&&k.r26!=null?k.r26-k.p26:null,co:"건기식",num:k.num,label:k.label,item:""});}}
           });
         })
       ),
 
-      /* ZONE 4 — 차트 */
-      e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}},
-        /* 바차트 */
-        e("div",{style:{background:"#0f172a",borderRadius:13,padding:14,border:"1px solid #1e293b"}},
-          e("div",{style:{fontWeight:700,fontSize:12,color:"#f1f5f9",marginBottom:2}},"계획 vs 실적 — "+ml),
-          e("div",{style:{fontSize:10,color:"#475569",marginBottom:8}},"각 막대 상단 = 실적값 · 색상 = Status 연동"),
-          e(SvgBarChart,{data:barData})
+      /* ZONE 4 차트 */
+      e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}},
+        e("div",{style:{background:"#0f172a",borderRadius:12,padding:14,border:"1px solid #1e293b"}},
+          e("div",{style:{fontWeight:700,fontSize:12,color:"#f1f5f9",marginBottom:1}},"계획 vs 실적 (건기식 합계) — "+ml),
+          e("div",{style:{fontSize:10,color:"#475569",marginBottom:7}},"막대 클릭 → NBT·BIO 분리 세부 표시"),
+          e(SvgBarChart,{data:barData,selIdx:selIdx,onSel:function(i){setSelIdx(selIdx===i?null:i);}}),
+          e(BarDetail,{data:barData,idx:selIdx})
         ),
-        /* 꺾은선 */
-        e("div",{style:{background:"#0f172a",borderRadius:13,padding:14,border:"1px solid #1e293b"}},
-          e("div",{style:{fontWeight:700,fontSize:12,color:"#f1f5f9",marginBottom:2}},"월별 실적 추이"),
-          e("div",{style:{fontSize:10,color:"#475569",marginBottom:8}},"각 선 우측 = 지표 번호 / 우측 범례 참조"),
+        e("div",{style:{background:"#0f172a",borderRadius:12,padding:14,border:"1px solid #1e293b"}},
+          e("div",{style:{fontWeight:700,fontSize:12,color:"#f1f5f9",marginBottom:1}},"지표별 계획비 달성률 — 1월·2월 비교"),
+          e("div",{style:{fontSize:10,color:"#475569",marginBottom:7}},"기준선 100% · 색상=Status · 건기식 합계 기준"),
           month==="YTD"
-            ? e("div",{style:{color:"#64748b",fontSize:12,padding:"40px 0",textAlign:"center"}},"YTD 모드에서는 누계 비교를 바차트로 확인하세요")
-            : e(SvgLineChart,{data:trendData})
+            ? e("div",{style:{color:"#64748b",fontSize:11,padding:"30px 0",textAlign:"center"}},"YTD 모드 — 바차트에서 누계 확인")
+            : e(SvgRatioChart,{data:ratioData})
         )
       ),
 
-      /* ZONE 4b — 채널별 성과 미니차트 */
-      e("div",{style:{background:"#0f172a",borderRadius:13,padding:14,border:"1px solid #1e293b",marginBottom:14}},
-        e("div",{style:{fontWeight:700,fontSize:12,color:"#f1f5f9",marginBottom:2}},"신유통 채널별 성과 — "+ml),
-        e("div",{style:{fontSize:10,color:"#475569",marginBottom:8}},"계획(진청) vs 실적(Status색) · 우측 = 계획비%"),
-        (CHANNEL_DATA[month]||CHANNEL_DATA["202602"])
-          ? e(ChannelMiniChart,{month:month,co:co})
-          : e("div",{style:{color:"#64748b",fontSize:12,padding:"20px 0",textAlign:"center"}},"해당 월 채널 데이터 없음")
-      ),
-
-      /* ZONE 5 — 세부 테이블 */
-      e("div",{style:{background:"#0f172a",borderRadius:13,border:"1px solid #1e293b",overflow:"hidden",marginBottom:14}},
-        e("div",{style:{padding:"11px 15px",borderBottom:"1px solid #1e293b",display:"flex",alignItems:"center",justifyContent:"space-between"}},
+      /* ZONE 5 세부 테이블 */
+      e("div",{style:{background:"#0f172a",borderRadius:12,border:"1px solid #1e293b",overflow:"hidden",marginBottom:10}},
+        e("div",{style:{padding:"10px 14px",borderBottom:"1px solid #1e293b",display:"flex",alignItems:"center",justifyContent:"space-between"}},
           e("div",null,
-            e("div",{style:{fontWeight:700,fontSize:13,color:"#f1f5f9"}},"세부 지표 테이블"),
-            e("div",{style:{fontSize:10,color:"#475569",marginTop:1}},"▸/▾ 클릭: 세부항목 펼침/접힘 · 📋 클릭: 증감사유")),
-          e("div",{style:{display:"flex",gap:5}},
+            e("div",{style:{fontWeight:700,fontSize:13,color:"#f1f5f9"}},"세부 지표 테이블 — 건기식(NBT+BIO) 합계 기준"),
+            e("div",{style:{fontSize:10,color:"#475569",marginTop:1}},"1클릭: NBT·BIO 합계 펼침 / 2클릭: 세부항목 펼침 / 3클릭: 접힘")),
+          e("div",{style:{display:"flex",gap:4}},
             [{k:"GREEN",l:"달성 100%↑"},{k:"YELLOW",l:"주의 95~98%"},{k:"RED",l:"미달 95%↓"}].map(function(it){
-              return e("span",{key:it.k,style:{fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:999,background:ST[it.k].bg,color:ST[it.k].tx,border:"1px solid "+ST[it.k].rg}},it.l);
+              return e("span",{key:it.k,style:{fontSize:9,fontWeight:700,padding:"2px 6px",borderRadius:999,background:ST[it.k].bg,color:ST[it.k].tx,border:"1px solid "+ST[it.k].rg}},it.l);
             })
           )
         ),
-        e("div",{style:{overflowX:"auto"}},
-          e(DetailTable,{co:co,month:month,onModal:setModal})
+        e("div",{style:{overflowX:"auto"}},e(DetailTable,{month:month,onModal:setModal}))
+      ),
+
+      /* 하단 미니차트 — 신유통(좌) + 해외(우) */
+      e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}},
+        e("div",{style:{background:"#0f172a",borderRadius:12,padding:14,border:"1px solid #1e293b"}},
+          e("div",{style:{fontWeight:700,fontSize:12,color:"#f1f5f9",marginBottom:2}},"신유통 채널별 성과 — "+ml),
+          e("div",{style:{fontSize:10,color:"#475569",marginBottom:7}},"계획(진청) · 실적(Status색) · 우측=계획비"),
+          e(SvgHorizBar,{rows:chRows,width:340})
+        ),
+        e("div",{style:{background:"#0f172a",borderRadius:12,padding:14,border:"1px solid #1e293b"}},
+          e("div",{style:{fontWeight:700,fontSize:12,color:"#f1f5f9",marginBottom:2}},"해외 마케팅 지표 — "+ml),
+          e("div",{style:{fontSize:10,color:"#475569",marginBottom:7}},"중국로컬·글로벌사 계획 vs 실적 (NBT·BIO)"),
+          e(SvgHorizBar,{rows:overseasRows,width:340})
         )
       ),
 
-      /* ZONE 하단 Status 범례 */
-      e("div",{style:{background:"#0f172a",borderRadius:10,border:"1px solid #1e293b",padding:"8px 16px",marginBottom:6,display:"flex",alignItems:"center",gap:16,flexWrap:"wrap"}},
+      /* 하단 범례 */
+      e("div",{style:{background:"#0f172a",borderRadius:10,border:"1px solid #1e293b",padding:"7px 14px",display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}},
         e("span",{style:{fontSize:10,color:"#475569",fontWeight:700}},"Status 기준"),
-        [{l:"초과 달성 100%↑",c:"#22c55e"},{l:"양호 98~100%",c:"#16a34a"},{l:"주의 95~98%",c:"#eab308"},{l:"미달 95%↓",c:"#ef4444"}].map(function(it,i){
+        [{l:"달성 100%↑",c:"#22c55e"},{l:"양호 98~100%",c:"#16a34a"},{l:"주의 95~98%",c:"#eab308"},{l:"미달 95%↓",c:"#ef4444"}].map(function(it,i){
           return e("span",{key:i,style:{display:"flex",alignItems:"center",gap:4,fontSize:10,color:"#94a3b8"}},
-            e("span",{style:{width:10,height:10,borderRadius:3,background:it.c,display:"inline-block"}}),
-            it.l
-          );
+            e("span",{style:{width:9,height:9,borderRadius:3,background:it.c,display:"inline-block"}}),it.l);
         }),
         e("span",{style:{marginLeft:"auto",fontSize:9,color:"#334155"}},"COSMAX BTI 경영관리팀 · "+ml+" 확정실적 · 단위: 억원")
       )
     ),
-
     e(Modal,{data:modal,onClose:function(){setModal(null);}})
   );
 }
-
 ReactDOM.createRoot(document.getElementById("root")).render(e(App,null));
 
 </script>
