@@ -19,10 +19,8 @@ button:focus{outline:none}
 </style>
 </head>
 <body>
-<div id="root"><div style="color:#94a3b8;padding:40px;text-align:center;font-size:14px">로딩 중...</div></div>
-<script>
-/* React 18 */
-/**
+<div id="root"><div style="color:#94a3b8;padding:40px;text-align:center">로딩 중...</div></div>
+<script>/**
  * @license React
  * react.production.min.js
  *
@@ -53,11 +51,8 @@ compare:void 0===b?null:b}};c.startTransition=function(a,b){b=J.transition;J.tra
 b)};c.useId=function(){return g.current.useId()};c.useImperativeHandle=function(a,b,c){return g.current.useImperativeHandle(a,b,c)};c.useInsertionEffect=function(a,b){return g.current.useInsertionEffect(a,b)};c.useLayoutEffect=function(a,b){return g.current.useLayoutEffect(a,b)};c.useMemo=function(a,b){return g.current.useMemo(a,b)};c.useReducer=function(a,b,c){return g.current.useReducer(a,b,c)};c.useRef=function(a){return g.current.useRef(a)};c.useState=function(a){return g.current.useState(a)};
 c.useSyncExternalStore=function(a,b,c){return g.current.useSyncExternalStore(a,b,c)};c.useTransition=function(){return g.current.useTransition()};c.version="18.2.0"});
 })();
-
 </script>
-<script>
-/* ReactDOM 18 */
-/**
+<script>/**
  * @license React
  * react-dom.production.min.js
  *
@@ -324,12 +319,10 @@ c,!1,d,e);a[Ja]=b.current;sc(8===a.nodeType?a.parentNode:a);return new Xf(b)};Q.
 var d=null!=c&&c.hydratedSources||null,e=!1,f="",g=bj;null!==c&&void 0!==c&&(!0===c.unstable_strictMode&&(e=!0),void 0!==c.identifierPrefix&&(f=c.identifierPrefix),void 0!==c.onRecoverableError&&(g=c.onRecoverableError));b=Xi(b,null,a,1,null!=c?c:null,e,!1,f,g);a[Ja]=b.current;sc(a);if(d)for(a=0;a<d.length;a++)c=d[a],e=c._getVersion,e=e(c._source),null==b.mutableSourceEagerHydrationData?b.mutableSourceEagerHydrationData=[c,e]:b.mutableSourceEagerHydrationData.push(c,e);return new Ud(b)};Q.render=
 function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmountComponentAtNode=function(a){if(!Vd(a))throw Error(n(40));return a._reactRootContainer?(zb(function(){Wd(null,null,a,!1,function(){a._reactRootContainer=null;a[Ja]=null})}),!0):!1};Q.unstable_batchedUpdates=Tf;Q.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!Vd(c))throw Error(n(200));if(null==a||void 0===a._reactInternals)throw Error(n(38));return Wd(a,b,c,!1,d)};Q.version="18.2.0-next-9e3b772b8-20220608"});
 })();
-
 </script>
 <script>
-/* Dashboard — Recharts 없음, 순수 SVG 차트 */
-
 const {useState,useMemo}=React;
+const e=React.createElement;
 
 const RAW=[
   {m:"202601",co:"NBT",cat:"중국로컬",item:"중국로컬(전체)",a25:79.7,p26:78.95,r26:117.4,why:"백양의약 신제품 런칭 / 고객사 판매량 증가"},
@@ -383,274 +376,269 @@ const RAW=[
   {m:"202602",co:"NBT",cat:"일반제형",item:"유산균",a25:null,p26:42,r26:43,why:"정상"},
   {m:"202602",co:"NBT",cat:"일반제형",item:"액상/젤리",a25:null,p26:72.18,r26:68,why:"백양제약 설비 이슈로 3월 납품 지연"},
   {m:"202602",co:"NBT",cat:"일반제형",item:"구미",a25:null,p26:16.17,r26:15,why:"Unilever 부자재 이슈"},
-  {m:"202602",co:"NBT",cat:"기술제형",item:"기술제형Top3",a25:null,p26:11.25,r26:12,why:"A;dam·AEPP 정상"},
+  {m:"202602",co:"NBT",cat:"기술제형",item:"기술제형Top3",a25:null,p26:11.25,r26:12,why:"A;dam AEPP 정상"},
   {m:"202602",co:"NBT",cat:"기술제형",item:"A;dam",a25:null,p26:6.75,r26:7,why:"정상"},
   {m:"202602",co:"NBT",cat:"기술제형",item:"AEPP",a25:null,p26:4.5,r26:5,why:"정상"},
   {m:"202602",co:"BIO",cat:"중국로컬",item:"중국로컬(전체)",a25:null,p26:5.57,r26:3.21,why:"FEIFAN BIOLOGY LIMITED: 츄어블 연질 3월 약 4억 매출 예정"},
   {m:"202602",co:"BIO",cat:"중국로컬",item:"AUTILI",a25:3.16,p26:1.19,r26:1.66,why:"정상"},
   {m:"202602",co:"BIO",cat:"중국로컬",item:"FEIFAN",a25:0,p26:1.74,r26:0,why:"3월 이월 매출 예정"},
   {m:"202602",co:"BIO",cat:"중국로컬",item:"Rosy Face",a25:0,p26:0,r26:1,why:"신규 매출 발생"},
-  {m:"202602",co:"BIO",cat:"글로벌사",item:"글로벌사(전체)",a25:null,p26:8.3,r26:4.02,why:"H&H: 액상칼슘·콜라겐액상 품질 승인 지연\n4.4억 3월로 이월"},
+  {m:"202602",co:"BIO",cat:"글로벌사",item:"글로벌사(전체)",a25:null,p26:8.3,r26:4.02,why:"H&H: 액상칼슘 콜라겐액상 품질 승인 지연\n4.4억 3월로 이월"},
   {m:"202602",co:"BIO",cat:"글로벌사",item:"Herbalife",a25:7.24,p26:6.14,r26:3.96,why:"계획 미달"},
-  {m:"202602",co:"BIO",cat:"글로벌사",item:"H&H (Swisse)",a25:7.9,p26:2.16,r26:0.05,why:"액상칼슘·콜라겐액상 품질 승인 지연 → 3월 이월"},
+  {m:"202602",co:"BIO",cat:"글로벌사",item:"H&H (Swisse)",a25:7.9,p26:2.16,r26:0.05,why:"액상칼슘 콜라겐액상 품질 승인 지연 3월 이월"},
   {m:"202602",co:"BIO",cat:"국내Top10",item:"국내Top10",a25:null,p26:42.18,r26:61.39,why:"어댑트 수출지원 매출 증가\n신세계바이오: 솔티스혈당분말\n오니스트: 케라글로우망고 젤리"},
-  {m:"202602",co:"BIO",cat:"신유통",item:"신유통채널",a25:null,p26:19.04,r26:14.23,why:"약국: 동아제약·온누리 부진\n올리브영: 어댑트 컷팅젤리 키티버전·포켓젤리 5종\n다이소: LG 신제품"},
-  {m:"202602",co:"BIO",cat:"신유통",item:"약국",a25:4.69,p26:8.65,r26:4.47,why:"동아제약·온누리약국 부진"},
-  {m:"202602",co:"BIO",cat:"신유통",item:"올리브영",a25:0.81,p26:5.04,r26:7.98,why:"어댑트 컷팅젤리 키티버전, 신제품 포켓젤리 5종"},
+  {m:"202602",co:"BIO",cat:"신유통",item:"신유통채널",a25:null,p26:19.04,r26:14.23,why:"약국: 동아제약 온누리 부진\n올리브영: 어댑트 컷팅젤리 키티버전 포켓젤리 5종\n다이소: LG 신제품"},
+  {m:"202602",co:"BIO",cat:"신유통",item:"약국",a25:4.69,p26:8.65,r26:4.47,why:"동아제약 온누리약국 부진"},
+  {m:"202602",co:"BIO",cat:"신유통",item:"올리브영",a25:0.81,p26:5.04,r26:7.98,why:"어댑트 컷팅젤리 키티버전 출시 포켓젤리 5종"},
   {m:"202602",co:"BIO",cat:"신유통",item:"다이소",a25:0,p26:5.35,r26:1.78,why:"LG 다이소 신제품 출시"},
-  {m:"202602",co:"BIO",cat:"전략소재",item:"전략소재(전체)",a25:null,p26:null,r26:null,why:"키라임복합: 광고심의 3월초 완료, 5월 제품화 예상"},
-  {m:"202602",co:"BIO",cat:"일반제형",item:"일반제형Top3",a25:null,p26:null,r26:null,why:"정제: 에스더포뮬러 멀티비타민 3월 매출 예정(약 5억)"},
-  {m:"202602",co:"BIO",cat:"기술제형",item:"기술제형Top3",a25:null,p26:null,r26:null,why:"듀얼팩: 종근당 제품 3월 출시 예정\n프레스샷: 설비 세팅 지연"},
+  {m:"202602",co:"BIO",cat:"전략소재",item:"전략소재(전체)",a25:null,p26:null,r26:null,why:"키라임복합: 광고심의 3월초 완료 5월 제품화 예상"},
+  {m:"202602",co:"BIO",cat:"일반제형",item:"일반제형Top3",a25:null,p26:null,r26:null,why:"정제: 에스더포뮬러 멀티비타민 3월 매출 예정 약 5억"},
+  {m:"202602",co:"BIO",cat:"기술제형",item:"기술제형Top3",a25:null,p26:null,r26:null,why:"듀얼팩: 종근당 제품 3월 출시 예정\n프레스샷: 설비 세팅 지연"}
 ];
 
 const CATS=["중국로컬","글로벌사","국내Top10","신유통","전략소재","일반제형","기술제형"];
-const CL={"중국로컬":"❶중국로컬","글로벌사":"❷글로벌사","국내Top10":"❸국내Top10","신유통":"❹신유통","전략소재":"❺전략소재","일반제형":"❻일반제형","기술제형":"❼기술제형"};
+const CL={"중국로컬":"1중국로컬","글로벌사":"2글로벌사","국내Top10":"3국내Top10","신유통":"4신유통","전략소재":"5전략소재","일반제형":"6일반제형","기술제형":"7기술제형"};
 const MO=[{v:"202601",l:"26년 1월"},{v:"202602",l:"26년 2월"}];
 const LC=["#3b82f6","#10b981","#f59e0b","#8b5cf6","#ef4444","#06b6d4","#f97316"];
 const TI=["중국로컬(전체)","글로벌사(전체)","국내Top10","신유통채널","전략소재(전체)","일반제형Top3","기술제형Top3"];
 const ST={GREEN:{bg:"#dcfce7",tx:"#166534",rg:"#22c55e",lb:"달성"},YELLOW:{bg:"#fef9c3",tx:"#854d0e",rg:"#ca8a04",lb:"주의"},RED:{bg:"#fee2e2",tx:"#991b1b",rg:"#ef4444",lb:"위험"},GRAY:{bg:"#1e293b",tx:"#94a3b8",rg:"#475569",lb:"미입력"}};
-const gs=r=>{if(r==null||isNaN(r)||!isFinite(r))return"GRAY";if(r>=1)return"GREEN";if(r>=0.85)return"YELLOW";return"RED";};
-const f=(v,d=1)=>(v==null||isNaN(v))?"–":Number(v).toFixed(d);
-const fp=v=>(v==null||isNaN(v)||!isFinite(v))?"–":(v*100).toFixed(1)+"%";
-const e=React.createElement;
 
-// Pure SVG bar chart - no Recharts
-function BarChart({data,height=200}){
-  const W=600,H=height,PL=40,PB=50,PT=10,PR=10;
-  const cw=W-PL-PR, ch=H-PT-PB;
-  const maxV=Math.max(...data.map(d=>Math.max(d.plan||0,d.actual||0)),1);
-  const bw=Math.floor(cw/data.length);
-  const bpad=Math.floor(bw*0.18);
-  const bInner=bw-bpad*2;
-  const bEach=Math.floor((bInner-4)/2);
-  const yTicks=[0,0.25,0.5,0.75,1].map(r=>Math.round(maxV*r));
-  const stcol={GREEN:"#22c55e",YELLOW:"#eab308",RED:"#ef4444",GRAY:"#475569"};
-  return e("svg",{viewBox:"0 0 "+W+" "+H,style:{width:"100%",height:H+"px"}},
-    // grid lines
-    yTicks.map((v,i)=>{
-      const y=PT+ch-(v/maxV)*ch;
-      return e("g",{key:i},
-        e("line",{x1:PL,y1:y,x2:W-PR,y2:y,stroke:"#1e293b",strokeWidth:1}),
-        e("text",{x:PL-4,y:y+4,textAnchor:"end",fill:"#475569",fontSize:9},v)
-      );
-    }),
-    // bars
-    data.map((d,i)=>{
-      const x=PL+i*bw+bpad;
-      const ph=d.plan>0?(d.plan/maxV)*ch:0;
-      const ah=d.actual>0?(d.actual/maxV)*ch:0;
-      const k=gs(d.actual&&d.plan?d.actual/d.plan:null);
-      return e("g",{key:i},
-        e("rect",{x:x,y:PT+ch-ph,width:bEach,height:ph,fill:"#1e3a5f",rx:2}),
-        e("rect",{x:x+bEach+4,y:PT+ch-ah,width:bEach,height:ah,fill:stcol[k],rx:2}),
-        e("text",{x:x+bInner/2,y:H-PB+14,textAnchor:"middle",fill:"#64748b",fontSize:8,transform:"rotate(-20,"+(x+bInner/2)+","+(H-PB+14)+")"},d.name)
-      );
-    }),
-    // legend
-    e("g",null,
-      e("rect",{x:PL,y:H-16,width:10,height:8,fill:"#1e3a5f",rx:1}),
-      e("text",{x:PL+13,y:H-9,fill:"#64748b",fontSize:9},"계획"),
-      e("rect",{x:PL+45,y:H-16,width:10,height:8,fill:"#3b82f6",rx:1}),
-      e("text",{x:PL+58,y:H-9,fill:"#64748b",fontSize:9},"실적")
-    )
-  );
+function gs(r){if(r==null||isNaN(r)||!isFinite(r))return"GRAY";if(r>=1)return"GREEN";if(r>=0.85)return"YELLOW";return"RED";}
+function f(v,d){d=d||1;return(v==null||isNaN(v))?"–":Number(v).toFixed(d);}
+function fp(v){return(v==null||isNaN(v)||!isFinite(v))?"–":(v*100).toFixed(1)+"%";}
+
+function SvgBar(props){
+  var data=props.data;
+  var W=560,H=200,PL=36,PB=48,PT=8,PR=8;
+  var cw=W-PL-PR,ch=H-PT-PB;
+  var maxV=1;
+  data.forEach(function(d){if((d.plan||0)>maxV)maxV=d.plan;if((d.actual||0)>maxV)maxV=d.actual;});
+  var bw=Math.floor(cw/data.length);
+  var bpad=Math.floor(bw*0.15);
+  var bInner=bw-bpad*2;
+  var bEach=Math.floor((bInner-3)/2);
+  var stcol={GREEN:"#22c55e",YELLOW:"#eab308",RED:"#ef4444",GRAY:"#475569"};
+  var ticks=[0,Math.round(maxV*0.5),Math.round(maxV)];
+  var rows=[];
+  ticks.forEach(function(v,i){
+    var y=PT+ch-(v/maxV)*ch;
+    rows.push(e("line",{key:"gl"+i,x1:PL,y1:y,x2:W-PR,y2:y,stroke:"#1e293b",strokeWidth:1}));
+    rows.push(e("text",{key:"gt"+i,x:PL-3,y:y+4,textAnchor:"end",fill:"#475569",fontSize:9},v));
+  });
+  data.forEach(function(d,i){
+    var x=PL+i*bw+bpad;
+    var ph=d.plan>0?(d.plan/maxV)*ch:0;
+    var ah=d.actual>0?(d.actual/maxV)*ch:0;
+    var ratio=(d.plan&&d.actual)?d.actual/d.plan:null;
+    var k=gs(ratio);
+    rows.push(e("rect",{key:"bp"+i,x:x,y:PT+ch-ph,width:bEach,height:Math.max(ph,1),fill:"#1e3a5f",rx:2}));
+    rows.push(e("rect",{key:"ba"+i,x:x+bEach+3,y:PT+ch-ah,width:bEach,height:Math.max(ah,1),fill:stcol[k],rx:2}));
+    var lx=x+bInner/2;
+    var ly=H-PB+13;
+    rows.push(e("text",{key:"bl"+i,x:lx,y:ly,textAnchor:"end",fill:"#64748b",fontSize:8,transform:"rotate(-30,"+lx+","+ly+")"},d.name));
+  });
+  rows.push(e("rect",{key:"lg1",x:PL,y:H-12,width:8,height:6,fill:"#1e3a5f",rx:1}));
+  rows.push(e("text",{key:"lt1",x:PL+10,y:H-7,fill:"#64748b",fontSize:8},"계획"));
+  rows.push(e("rect",{key:"lg2",x:PL+35,y:H-12,width:8,height:6,fill:"#3b82f6",rx:1}));
+  rows.push(e("text",{key:"lt2",x:PL+45,y:H-7,fill:"#64748b",fontSize:8},"실적"));
+  return e("svg",{viewBox:"0 0 "+W+" "+H,style:{width:"100%",height:H+"px"}},rows);
 }
 
-// Pure SVG line chart
-function LineChart({data,height=200}){
-  const W=600,H=height,PL=40,PB=30,PT=10,PR=60;
-  const cw=W-PL-PR, ch=H-PT-PB;
-  const allVals=data.flatMap(d=>CATS.map(c=>d[CL[c]]||0)).filter(v=>v>0);
-  const maxV=Math.max(...allVals,1);
-  const xStep=cw/(data.length-1||1);
-  return e("svg",{viewBox:"0 0 "+W+" "+H,style:{width:"100%",height:H+"px"}},
-    [0,0.5,1].map((r,i)=>{
-      const y=PT+ch-(r*ch);
-      return e("g",{key:i},
-        e("line",{x1:PL,y1:y,x2:W-PR,y2:y,stroke:"#1e293b",strokeWidth:1}),
-        e("text",{x:PL-4,y:y+4,textAnchor:"end",fill:"#475569",fontSize:9},Math.round(maxV*r))
-      );
-    }),
-    data.map((d,i)=>e("text",{key:i,x:PL+i*xStep,y:H-PB+14,textAnchor:"middle",fill:"#64748b",fontSize:10},d.name)),
-    CATS.map((cat,ci)=>{
-      const pts=data.map((d,i)=>{
-        const v=d[CL[cat]];
-        if(v==null)return null;
-        return [PL+i*xStep, PT+ch-(v/maxV)*ch];
-      });
-      const valid=pts.filter(Boolean);
-      if(valid.length<1)return null;
-      const path=valid.map((p,i)=>(i===0?"M":"L")+p[0]+","+p[1]).join(" ");
-      return e("g",{key:cat},
-        e("path",{d:path,fill:"none",stroke:LC[ci],strokeWidth:2}),
-        valid.map((p,i)=>e("circle",{key:i,cx:p[0],cy:p[1],r:3,fill:LC[ci]}))
-      );
-    }),
-    // legend right side
-    CATS.map((cat,i)=>e("g",{key:cat},
-      e("line",{x1:W-PR+4,y1:PT+i*18+8,x2:W-PR+14,y2:PT+i*18+8,stroke:LC[i],strokeWidth:2}),
-      e("text",{x:W-PR+16,y:PT+i*18+12,fill:"#64748b",fontSize:8},CL[cat]})))
-  );
+function SvgLine(props){
+  var data=props.data;
+  var W=560,H=200,PL=36,PB=28,PT=8,PR=8;
+  var cw=W-PL-PR,ch=H-PT-PB;
+  var maxV=1;
+  data.forEach(function(d){
+    CATS.forEach(function(c){var v=d[CL[c]];if(v&&v>maxV)maxV=v;});
+  });
+  var xStep=data.length>1?cw/(data.length-1):0;
+  var els=[];
+  [0,0.5,1].forEach(function(r,i){
+    var y=PT+ch-r*ch;
+    els.push(e("line",{key:"gl"+i,x1:PL,y1:y,x2:W-PR,y2:y,stroke:"#1e293b",strokeWidth:1}));
+    els.push(e("text",{key:"gv"+i,x:PL-3,y:y+4,textAnchor:"end",fill:"#475569",fontSize:9},Math.round(maxV*r)));
+  });
+  data.forEach(function(d,i){
+    els.push(e("text",{key:"xl"+i,x:PL+i*xStep,y:H-PB+14,textAnchor:"middle",fill:"#64748b",fontSize:10},d.name));
+  });
+  CATS.forEach(function(cat,ci){
+    var pts=[];
+    data.forEach(function(d,i){
+      var v=d[CL[cat]];
+      if(v!=null)pts.push([PL+i*xStep,PT+ch-(v/maxV)*ch]);
+    });
+    if(pts.length===0)return;
+    var path=pts.map(function(p,i){return(i===0?"M":"L")+p[0].toFixed(1)+","+p[1].toFixed(1);}).join(" ");
+    els.push(e("path",{key:"line"+ci,d:path,fill:"none",stroke:LC[ci],strokeWidth:2}));
+    pts.forEach(function(p,i){els.push(e("circle",{key:"dot"+ci+"_"+i,cx:p[0],cy:p[1],r:3,fill:LC[ci]}));});
+  });
+  return e("svg",{viewBox:"0 0 "+W+" "+H,style:{width:"100%",height:H+"px"}},els);
 }
 
-function KpiCard({title,plan,actual,onClick}){
-  const ratio=(plan&&actual!=null)?actual/plan:null;
-  const k=gs(ratio);const s=ST[k];
-  const pct=Math.min((ratio||0)*100,100);
-  return e("div",{className:"kpi",onClick,style:{borderRadius:14,padding:"12px 10px",border:"2px solid "+s.rg,background:k==="GRAY"?"#0f172a":s.bg}},
-    e("div",{style:{fontSize:9.5,fontWeight:700,color:k==="GRAY"?"#64748b":s.tx,marginBottom:3}},title),
-    e("div",{style:{fontSize:21,fontWeight:900,color:k==="GRAY"?"#94a3b8":s.tx,fontFamily:"monospace",lineHeight:1}},f(actual),e("span",{style:{fontSize:10,fontWeight:400,marginLeft:2}},"억")),
-    e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:5}},
-      e("span",{style:{fontSize:9,color:k==="GRAY"?"#475569":s.tx}},"계획 "+f(plan)+"억"),
+function KpiCard(props){
+  var ratio=(props.plan&&props.actual!=null)?props.actual/props.plan:null;
+  var k=gs(ratio);var s=ST[k];
+  var pct=Math.min((ratio||0)*100,100);
+  return e("div",{className:"kpi",onClick:props.onClick,style:{borderRadius:14,padding:"12px 10px",border:"2px solid "+s.rg,background:k==="GRAY"?"#0f172a":s.bg}},
+    e("div",{style:{fontSize:9.5,fontWeight:700,color:k==="GRAY"?"#64748b":s.tx,marginBottom:3}},props.title),
+    e("div",{style:{fontSize:20,fontWeight:900,color:k==="GRAY"?"#94a3b8":s.tx,fontFamily:"monospace",lineHeight:1}},
+      f(props.actual),e("span",{style:{fontSize:10,fontWeight:400,marginLeft:2}},"억")),
+    e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:4}},
+      e("span",{style:{fontSize:9,color:k==="GRAY"?"#475569":s.tx}},"계획 "+f(props.plan)+"억"),
       e("span",{style:{fontSize:10,fontWeight:800,padding:"1px 6px",borderRadius:999,background:s.rg,color:"#fff"}},fp(ratio))),
-    e("div",{style:{marginTop:5,background:"rgba(255,255,255,0.12)",borderRadius:99,height:3}},
+    e("div",{style:{marginTop:4,background:"rgba(255,255,255,0.12)",borderRadius:99,height:3}},
       e("div",{style:{width:pct+"%",height:"100%",background:s.rg}}))
   );
 }
 
-function Modal({row,onClose}){
-  if(!row)return null;
-  const ratio=row.p26&&row.r26!=null?row.r26/row.p26:null;
-  const yoy=row.a25&&row.r26!=null?row.r26/row.a25:null;
-  const diff=row.r26!=null&&row.p26!=null?row.r26-row.p26:null;
-  const k=gs(ratio);const s=ST[k];
-  return e("div",{className:"modal-bg",onClick:onClose},
-    e("div",{onClick:ev=>ev.stopPropagation(),style:{background:"#fff",borderRadius:18,maxWidth:440,width:"100%",overflow:"hidden",boxShadow:"0 30px 70px rgba(0,0,0,0.6)"}},
-      e("div",{style:{borderTop:"5px solid "+s.rg,padding:"18px 22px 0"}},
+function Modal(props){
+  if(!props.row)return null;
+  var row=props.row;
+  var ratio=row.p26&&row.r26!=null?row.r26/row.p26:null;
+  var yoy=row.a25&&row.r26!=null?row.r26/row.a25:null;
+  var diff=row.r26!=null&&row.p26!=null?row.r26-row.p26:null;
+  var k=gs(ratio);var s=ST[k];
+  return e("div",{className:"modal-bg",onClick:props.onClose},
+    e("div",{onClick:function(ev){ev.stopPropagation();},style:{background:"#fff",borderRadius:18,maxWidth:440,width:"100%",overflow:"hidden",boxShadow:"0 25px 60px rgba(0,0,0,0.5)"}},
+      e("div",{style:{borderTop:"5px solid "+s.rg,padding:"16px 20px 0"}},
         e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}},
           e("div",null,
-            e("div",{style:{fontSize:10,color:"#64748b",marginBottom:3}},row.co+" · "+CL[row.cat]),
-            e("div",{style:{fontSize:17,fontWeight:900,color:"#0f172a"}},row.item)),
-          e("button",{onClick:onClose,style:{fontSize:22,color:"#94a3b8",background:"none",border:"none",cursor:"pointer"}},"×"))),
-      e("div",{style:{padding:"14px 22px 20px"}},
-        e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:10}},
-          ...[["25 실적",f(row.a25)+"억"],["26 계획",f(row.p26)+"억"],["26 실적",f(row.r26)+"억"]].map(([l,v])=>
-            e("div",{key:l,style:{background:"#f8fafc",borderRadius:10,padding:9,textAlign:"center",border:"1px solid #e2e8f0"}},
-              e("div",{style:{fontSize:9,color:"#64748b",marginBottom:1}},l),
-              e("div",{style:{fontSize:17,fontWeight:900,color:"#0f172a",fontFamily:"monospace"}},v)))),
-        e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:10}},
-          e("div",{style:{background:k==="GRAY"?"#f8fafc":s.bg,border:"2px solid "+s.rg,borderRadius:10,padding:9,textAlign:"center"}},
-            e("div",{style:{fontSize:9,color:s.tx,fontWeight:700}},"계획비"),
-            e("div",{style:{fontSize:20,fontWeight:900,color:s.tx}},fp(ratio))),
-          e("div",{style:{background:"#f8fafc",border:"1px solid #e2e8f0",borderRadius:10,padding:9,textAlign:"center"}},
-            e("div",{style:{fontSize:9,color:"#64748b"}},"전년비"),
-            e("div",{style:{fontSize:20,fontWeight:900,color:"#0f172a"}},fp(yoy))),
-          e("div",{style:{background:"#f8fafc",border:"1px solid #e2e8f0",borderRadius:10,padding:9,textAlign:"center"}},
-            e("div",{style:{fontSize:9,color:"#64748b"}},"차이금액"),
-            e("div",{style:{fontSize:18,fontWeight:900,color:diff==null?"#94a3b8":diff>=0?"#16a34a":"#dc2626"}},
-              diff!=null?(diff>=0?"+":"")+f(diff)+"억":"–"))),
-        row.why&&e("div",{style:{background:"#fffbeb",border:"1px solid #fcd34d",borderRadius:10,padding:11}},
-          e("div",{style:{fontSize:10,fontWeight:800,color:"#92400e",marginBottom:3}},"📋 주요 증감 사유"),
-          e("div",{style:{fontSize:12,color:"#78350f",lineHeight:1.7,whiteSpace:"pre-line"}},row.why))
+            e("div",{style:{fontSize:10,color:"#64748b",marginBottom:2}},row.co+" · "+CL[row.cat]),
+            e("div",{style:{fontSize:16,fontWeight:900,color:"#0f172a"}},row.item)),
+          e("button",{onClick:props.onClose,style:{fontSize:20,color:"#94a3b8",background:"none",border:"none",cursor:"pointer"}},"×"))),
+      e("div",{style:{padding:"12px 20px 18px"}},
+        e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:7,marginBottom:9}},
+          e("div",{style:{background:"#f8fafc",borderRadius:9,padding:8,textAlign:"center",border:"1px solid #e2e8f0"}},e("div",{style:{fontSize:9,color:"#64748b",marginBottom:1}},"25 실적"),e("div",{style:{fontSize:16,fontWeight:900,color:"#0f172a",fontFamily:"monospace"}},f(row.a25)+"억")),
+          e("div",{style:{background:"#f8fafc",borderRadius:9,padding:8,textAlign:"center",border:"1px solid #e2e8f0"}},e("div",{style:{fontSize:9,color:"#64748b",marginBottom:1}},"26 계획"),e("div",{style:{fontSize:16,fontWeight:900,color:"#0f172a",fontFamily:"monospace"}},f(row.p26)+"억")),
+          e("div",{style:{background:"#f8fafc",borderRadius:9,padding:8,textAlign:"center",border:"1px solid #e2e8f0"}},e("div",{style:{fontSize:9,color:"#64748b",marginBottom:1}},"26 실적"),e("div",{style:{fontSize:16,fontWeight:900,color:"#0f172a",fontFamily:"monospace"}},f(row.r26)+"억"))
+        ),
+        e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:7,marginBottom:9}},
+          e("div",{style:{background:k==="GRAY"?"#f8fafc":s.bg,border:"2px solid "+s.rg,borderRadius:9,padding:8,textAlign:"center"}},e("div",{style:{fontSize:9,color:s.tx,fontWeight:700}},"계획비"),e("div",{style:{fontSize:18,fontWeight:900,color:s.tx}},fp(ratio))),
+          e("div",{style:{background:"#f8fafc",border:"1px solid #e2e8f0",borderRadius:9,padding:8,textAlign:"center"}},e("div",{style:{fontSize:9,color:"#64748b"}},"전년비"),e("div",{style:{fontSize:18,fontWeight:900,color:"#0f172a"}},fp(yoy))),
+          e("div",{style:{background:"#f8fafc",border:"1px solid #e2e8f0",borderRadius:9,padding:8,textAlign:"center"}},e("div",{style:{fontSize:9,color:"#64748b"}},"차이금액"),e("div",{style:{fontSize:16,fontWeight:900,color:diff==null?"#94a3b8":diff>=0?"#16a34a":"#dc2626"}},diff!=null?(diff>=0?"+":"")+f(diff)+"억":"–"))
+        ),
+        row.why?e("div",{style:{background:"#fffbeb",border:"1px solid #fcd34d",borderRadius:9,padding:10}},
+          e("div",{style:{fontSize:10,fontWeight:800,color:"#92400e",marginBottom:2}},"주요 증감 사유"),
+          e("div",{style:{fontSize:12,color:"#78350f",lineHeight:1.7,whiteSpace:"pre-line"}},row.why)):null
       )
     )
   );
 }
 
 function App(){
-  const [month,setMonth]=useState("202602");
-  const [co,setCo]=useState("ALL");
-  const [modal,setModal]=useState(null);
-  const filt=useMemo(()=>RAW.filter(d=>d.m===month&&(co==="ALL"||d.co===co)),[month,co]);
-  const getTop=cat=>{
-    const rows=RAW.filter(d=>d.m===month&&(co==="ALL"||d.co===co)&&d.cat===cat&&TI.some(k=>d.item===k||d.item.includes("(전체)")));
-    if(co==="ALL")return{p26:rows.reduce((s,d)=>s+(d.p26||0),0)||null,r26:rows.reduce((s,d)=>s+(d.r26||0),0)||null};
-    return filt.find(d=>d.cat===cat&&TI.some(k=>d.item===k||d.item.includes("(전체)")))||{};
-  };
-  const tops=useMemo(()=>Object.fromEntries(CATS.map(c=>[c,getTop(c)])),[filt,month,co]);
-  const barData=CATS.map(cat=>{
-    const d=tops[cat];
-    return{name:CL[cat],plan:d?.p26||0,actual:d?.r26||0};
+  var state=useState("202602");var month=state[0];var setMonth=state[1];
+  var state2=useState("ALL");var co=state2[0];var setCo=state2[1];
+  var state3=useState(null);var modal=state3[0];var setModal=state3[1];
+
+  var filt=useMemo(function(){return RAW.filter(function(d){return d.m===month&&(co==="ALL"||d.co===co);});},[ month,co]);
+
+  function getTop(cat){
+    var rows=RAW.filter(function(d){return d.m===month&&(co==="ALL"||d.co===co)&&d.cat===cat&&TI.some(function(k){return d.item===k||d.item.indexOf("(전체)")>-1;});});
+    if(co==="ALL")return{p26:rows.reduce(function(s,d){return s+(d.p26||0);},0)||null,r26:rows.reduce(function(s,d){return s+(d.r26||0);},0)||null};
+    return filt.find(function(d){return d.cat===cat&&TI.some(function(k){return d.item===k||d.item.indexOf("(전체)")>-1;});})||{};
+  }
+
+  var tops=useMemo(function(){
+    var o={};CATS.forEach(function(c){o[c]=getTop(c);});return o;
+  },[filt,month,co]);
+
+  var barData=CATS.map(function(cat){
+    var d=tops[cat];return{name:CL[cat],plan:d&&d.p26||0,actual:d&&d.r26||0};
   });
-  const trendData=MO.map(({v,l})=>{
-    const obj={name:l};
-    CATS.forEach(cat=>{
-      const rows=RAW.filter(d=>d.m===v&&(co==="ALL"||d.co===co)&&d.cat===cat&&TI.some(k=>d.item===k||d.item.includes("(전체)")));
-      obj[CL[cat]]=co==="ALL"?rows.reduce((s,d)=>s+(d.r26||0),0):rows[0]?.r26||null;
+
+  var trendData=MO.map(function(mo){
+    var obj={name:mo.l};
+    CATS.forEach(function(cat){
+      var rows=RAW.filter(function(d){return d.m===mo.v&&(co==="ALL"||d.co===co)&&d.cat===cat&&TI.some(function(k){return d.item===k||d.item.indexOf("(전체)")>-1;});});
+      obj[CL[cat]]=co==="ALL"?rows.reduce(function(s,d){return s+(d.r26||0);},0):(rows[0]?rows[0].r26:null);
     });
     return obj;
   });
-  const tableRows=filt.filter(d=>!TI.some(k=>d.item===k||d.item.includes("(전체)")));
-  const ml=MO.find(o=>o.v===month)?.l;
+
+  var tableRows=filt.filter(function(d){return!TI.some(function(k){return d.item===k||d.item.indexOf("(전체)")>-1;});});
+  var ml=MO.find(function(o){return o.v===month;}).l;
 
   return e("div",{style:{minHeight:"100vh",background:"#0a0f1e",color:"#e2e8f0"}},
-    // HEADER
     e("div",{style:{borderBottom:"1px solid #1e293b",padding:"10px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(15,23,42,0.98)",position:"sticky",top:0,zIndex:50}},
       e("div",{style:{display:"flex",alignItems:"center",gap:10}},
-        e("div",{style:{width:34,height:34,borderRadius:9,background:"#3b82f6",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,color:"#fff",fontSize:14}},"C"),
+        e("div",{style:{width:32,height:32,borderRadius:8,background:"#3b82f6",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,color:"#fff",fontSize:13}},"C"),
         e("div",null,
-          e("div",{style:{fontWeight:900,fontSize:14,color:"#f1f5f9"}},"COSMAX BTI"),
+          e("div",{style:{fontWeight:900,fontSize:13,color:"#f1f5f9"}},"COSMAX BTI"),
           e("div",{style:{fontSize:10,color:"#475569"}},"26년 공통전략지표 경영실적 대시보드"))),
       e("div",{style:{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}},
         e("span",{style:{fontSize:10,color:"#475569"}},"기준월"),
-        e("select",{value:month,onChange:ev=>setMonth(ev.target.value),style:{background:"#1e293b",border:"1px solid #334155",borderRadius:7,padding:"5px 10px",color:"#f1f5f9",fontSize:12,fontWeight:700}},
-          MO.map(o=>e("option",{key:o.v,value:o.v},o.l))),
+        e("select",{value:month,onChange:function(ev){setMonth(ev.target.value);},style:{background:"#1e293b",border:"1px solid #334155",borderRadius:7,padding:"5px 10px",color:"#f1f5f9",fontSize:12,fontWeight:700}},
+          MO.map(function(o){return e("option",{key:o.v,value:o.v},o.l);})),
         e("div",{style:{display:"flex",borderRadius:7,overflow:"hidden",border:"1px solid #334155"}},
-          ["ALL","NBT","BIO"].map(c=>e("button",{key:c,onClick:()=>setCo(c),style:{padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",border:"none",background:co===c?"#3b82f6":"#1e293b",color:co===c?"#fff":"#64748b"}},c==="ALL"?"전체":c))),
-        e("span",{style:{fontSize:10,color:"#475569",border:"1px solid #334155",borderRadius:7,padding:"5px 10px",background:"#1e293b"}},ml+" 확정실적"))),
-    // BODY
-    e("div",{style:{padding:"16px 20px",maxWidth:1400,margin:"0 auto"}},
-      e("div",{style:{fontSize:10,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}},"📊 핵심지표 Summary — 계획비 기준 · 카드 클릭시 증감사유"),
-      // KPI CARDS
-      e("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:8,marginBottom:16}},
-        CATS.map(cat=>{
-          const d=tops[cat];
-          const tr=filt.find(r=>r.cat===cat&&TI.some(k=>r.item===k||r.item.includes("(전체)")));
-          return e(KpiCard,{key:cat,title:CL[cat],plan:d?.p26,actual:d?.r26,onClick:()=>tr?.why&&setModal(tr)});
-        })),
-      // CHARTS
-      e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}},
-        e("div",{style:{background:"#0f172a",borderRadius:14,padding:16,border:"1px solid #1e293b"}},
-          e("div",{style:{fontWeight:700,fontSize:13,color:"#f1f5f9",marginBottom:4}},"계획 vs 실적 — "+ml),
-          e(BarChart,{data:barData})),
-        e("div",{style:{background:"#0f172a",borderRadius:14,padding:16,border:"1px solid #1e293b"}},
-          e("div",{style:{fontWeight:700,fontSize:13,color:"#f1f5f9",marginBottom:4}},"월별 실적 추이"),
-          e(LineChart,{data:trendData}))),
-      // TABLE
-      e("div",{style:{background:"#0f172a",borderRadius:14,border:"1px solid #1e293b",overflow:"hidden"}},
-        e("div",{style:{padding:"12px 16px",borderBottom:"1px solid #1e293b",display:"flex",alignItems:"center",justifyContent:"space-between"}},
+          ["ALL","NBT","BIO"].map(function(c){return e("button",{key:c,onClick:function(){setCo(c);},style:{padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",border:"none",background:co===c?"#3b82f6":"#1e293b",color:co===c?"#fff":"#64748b"}},c==="ALL"?"전체":c);})),
+        e("span",{style:{fontSize:10,color:"#475569",border:"1px solid #334155",borderRadius:7,padding:"5px 10px",background:"#1e293b"}},ml+" 확정실적")
+      )
+    ),
+    e("div",{style:{padding:"14px 18px",maxWidth:1400,margin:"0 auto"}},
+      e("div",{style:{fontSize:10,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:8}},"핵심지표 Summary — 계획비 기준 · 카드 클릭시 증감사유"),
+      e("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:7,marginBottom:14}},
+        CATS.map(function(cat){
+          var d=tops[cat];
+          var tr=filt.find(function(r){return r.cat===cat&&TI.some(function(k){return r.item===k||r.item.indexOf("(전체)")>-1;});});
+          return e(KpiCard,{key:cat,title:CL[cat],plan:d&&d.p26,actual:d&&d.r26,onClick:function(){if(tr&&tr.why)setModal(tr);}});
+        })
+      ),
+      e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}},
+        e("div",{style:{background:"#0f172a",borderRadius:13,padding:14,border:"1px solid #1e293b"}},
+          e("div",{style:{fontWeight:700,fontSize:12,color:"#f1f5f9",marginBottom:6}},"계획 vs 실적 — "+ml),
+          e(SvgBar,{data:barData})),
+        e("div",{style:{background:"#0f172a",borderRadius:13,padding:14,border:"1px solid #1e293b"}},
+          e("div",{style:{fontWeight:700,fontSize:12,color:"#f1f5f9",marginBottom:6}},"월별 실적 추이 (억원)"),
+          e(SvgLine,{data:trendData}))
+      ),
+      e("div",{style:{background:"#0f172a",borderRadius:13,border:"1px solid #1e293b",overflow:"hidden"}},
+        e("div",{style:{padding:"11px 15px",borderBottom:"1px solid #1e293b",display:"flex",alignItems:"center",justifyContent:"space-between"}},
           e("div",null,
-            e("div",{style:{fontWeight:700,fontSize:13,color:"#f1f5f9"}},"세부 지표 상세 테이블"),
-            e("div",{style:{fontSize:10,color:"#475569",marginTop:1}},"📋 클릭시 증감사유 팝업")),
-          e("div",{style:{display:"flex",gap:6}},
-            ["GREEN","YELLOW","RED"].map(k=>e("span",{key:k,style:{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:999,background:ST[k].bg,color:ST[k].tx,border:"1px solid "+ST[k].rg}},ST[k].lb)))),
+            e("div",{style:{fontWeight:700,fontSize:13,color:"#f1f5f9"}},"세부 지표 테이블"),
+            e("div",{style:{fontSize:10,color:"#475569",marginTop:1}},"행 클릭시 증감사유")),
+          e("div",{style:{display:"flex",gap:5}},
+            ["GREEN","YELLOW","RED"].map(function(k){return e("span",{key:k,style:{fontSize:10,fontWeight:700,padding:"2px 7px",borderRadius:999,background:ST[k].bg,color:ST[k].tx,border:"1px solid "+ST[k].rg}},ST[k].lb);}))
+        ),
         e("div",{style:{overflowX:"auto"}},
           e("table",{style:{width:"100%",borderCollapse:"collapse",fontSize:12}},
             e("thead",null,e("tr",{style:{background:"#1e293b"}},
-              ["계열사","지표","세부항목","25실적","26계획","26실적","계획비","전년비","차이","Status","사유"].map(h=>
-                e("th",{key:h,style:{padding:"9px 11px",textAlign:["25실적","26계획","26실적","계획비","전년비","차이"].includes(h)?"right":"left",fontSize:10,fontWeight:700,color:"#64748b",whiteSpace:"nowrap",textTransform:"uppercase"}},h)))),
+              ["계열사","지표","세부항목","25실적","26계획","26실적","계획비","전년비","차이","Status","사유"].map(function(h){
+                return e("th",{key:h,style:{padding:"8px 10px",textAlign:["25실적","26계획","26실적","계획비","전년비","차이"].indexOf(h)>-1?"right":"left",fontSize:10,fontWeight:700,color:"#64748b",whiteSpace:"nowrap",textTransform:"uppercase"}},h);
+              })
+            )),
             e("tbody",null,
-              tableRows.length===0&&e("tr",null,e("td",{colSpan:11,style:{textAlign:"center",padding:24,color:"#475569"}},"데이터 없음")),
-              tableRows.map((row,i)=>{
-                const ratio=row.p26&&row.r26!=null?row.r26/row.p26:null;
-                const yoy=row.a25&&row.r26!=null?row.r26/row.a25:null;
-                const diff=row.r26!=null&&row.p26!=null?row.r26-row.p26:null;
-                const k=gs(ratio);const s=ST[k];
-                return e("tr",{key:i,className:"trow",style:{borderBottom:"1px solid #1e293b",background:i%2===0?"transparent":"rgba(30,41,59,0.3)",cursor:row.why?"pointer":"default"}},
-                  e("td",{style:{padding:"8px 11px"}},e("span",{style:{fontSize:10,fontWeight:700,padding:"2px 6px",borderRadius:5,background:row.co==="NBT"?"rgba(59,130,246,0.18)":"rgba(16,185,129,0.18)",color:row.co==="NBT"?"#93c5fd":"#6ee7b7"}},row.co)),
-                  e("td",{style:{padding:"8px 11px",fontSize:10,color:"#64748b"}},CL[row.cat]),
-                  e("td",{style:{padding:"8px 11px",color:"#e2e8f0",fontWeight:500}},row.item),
-                  e("td",{style:{padding:"8px 11px",textAlign:"right",color:"#64748b",fontFamily:"monospace",fontSize:11}},f(row.a25)),
-                  e("td",{style:{padding:"8px 11px",textAlign:"right",color:"#93c5fd",fontFamily:"monospace",fontSize:11}},f(row.p26)),
-                  e("td",{style:{padding:"8px 11px",textAlign:"right",fontWeight:700,fontFamily:"monospace",fontSize:11,color:s.rg}},f(row.r26)),
-                  e("td",{style:{padding:"8px 11px",textAlign:"right"}},e("span",{style:{fontSize:11,fontWeight:800,padding:"1px 7px",borderRadius:999,background:s.bg,color:s.tx}},fp(ratio))),
-                  e("td",{style:{padding:"8px 11px",textAlign:"right",color:"#64748b",fontFamily:"monospace",fontSize:11}},fp(yoy)),
-                  e("td",{style:{padding:"8px 11px",textAlign:"right",fontWeight:700,fontFamily:"monospace",fontSize:11,color:diff==null?"#475569":diff>=0?"#4ade80":"#f87171"}},diff!=null?(diff>=0?"+":"")+f(diff)+"억":"–"),
-                  e("td",{style:{padding:"8px 11px",textAlign:"center"}},e("span",{style:{fontSize:10,fontWeight:700,padding:"1px 7px",borderRadius:999,background:s.bg,color:s.tx}},s.lb)),
-                  e("td",{style:{padding:"8px 11px",textAlign:"center"}},row.why?e("button",{onClick:()=>setModal(row),style:{background:"none",border:"none",cursor:"pointer",fontSize:14}},"📋"):e("span",{style:{color:"#334155"}},"–"))
+              tableRows.length===0?e("tr",null,e("td",{colSpan:11,style:{textAlign:"center",padding:24,color:"#475569"}},"데이터 없음")):null,
+              tableRows.map(function(row,i){
+                var ratio=row.p26&&row.r26!=null?row.r26/row.p26:null;
+                var yoy=row.a25&&row.r26!=null?row.r26/row.a25:null;
+                var diff=row.r26!=null&&row.p26!=null?row.r26-row.p26:null;
+                var k=gs(ratio);var s=ST[k];
+                return e("tr",{key:i,className:"trow",onClick:function(){if(row.why)setModal(row);},style:{borderBottom:"1px solid #1e293b",background:i%2===0?"transparent":"rgba(30,41,59,0.3)",cursor:row.why?"pointer":"default"}},
+                  e("td",{style:{padding:"7px 10px"}},e("span",{style:{fontSize:10,fontWeight:700,padding:"2px 5px",borderRadius:4,background:row.co==="NBT"?"rgba(59,130,246,0.18)":"rgba(16,185,129,0.18)",color:row.co==="NBT"?"#93c5fd":"#6ee7b7"}},row.co)),
+                  e("td",{style:{padding:"7px 10px",fontSize:10,color:"#64748b"}},CL[row.cat]),
+                  e("td",{style:{padding:"7px 10px",color:"#e2e8f0",fontWeight:500}},row.item),
+                  e("td",{style:{padding:"7px 10px",textAlign:"right",color:"#64748b",fontFamily:"monospace",fontSize:11}},f(row.a25)),
+                  e("td",{style:{padding:"7px 10px",textAlign:"right",color:"#93c5fd",fontFamily:"monospace",fontSize:11}},f(row.p26)),
+                  e("td",{style:{padding:"7px 10px",textAlign:"right",fontWeight:700,fontFamily:"monospace",fontSize:11,color:s.rg}},f(row.r26)),
+                  e("td",{style:{padding:"7px 10px",textAlign:"right"}},e("span",{style:{fontSize:11,fontWeight:800,padding:"1px 6px",borderRadius:999,background:s.bg,color:s.tx}},fp(ratio))),
+                  e("td",{style:{padding:"7px 10px",textAlign:"right",color:"#64748b",fontFamily:"monospace",fontSize:11}},fp(yoy)),
+                  e("td",{style:{padding:"7px 10px",textAlign:"right",fontWeight:700,fontFamily:"monospace",fontSize:11,color:diff==null?"#475569":diff>=0?"#4ade80":"#f87171"}},diff!=null?(diff>=0?"+":"")+f(diff)+"억":"–"),
+                  e("td",{style:{padding:"7px 10px",textAlign:"center"}},e("span",{style:{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:999,background:s.bg,color:s.tx}},s.lb)),
+                  e("td",{style:{padding:"7px 10px",textAlign:"center"}},row.why?e("span",{style:{cursor:"pointer",fontSize:14}},"📋"):e("span",{style:{color:"#334155"}},"–"))
                 );
               })
             )
           )
         )
       ),
-      e("div",{style:{textAlign:"center",fontSize:10,color:"#334155",marginTop:12,paddingBottom:8}},"COSMAX BTI 경영관리팀 · "+ml+" 확정실적 · 단위: 억원")
+      e("div",{style:{textAlign:"center",fontSize:10,color:"#334155",marginTop:10,paddingBottom:6}},"COSMAX BTI 경영관리팀 · "+ml+" 확정실적 · 단위: 억원")
     ),
-    e(Modal,{row:modal,onClose:()=>setModal(null)})
+    e(Modal,{row:modal,onClose:function(){setModal(null);}})
   );
 }
-ReactDOM.createRoot(document.getElementById("root")).render(e(App,null));
 
+ReactDOM.createRoot(document.getElementById("root")).render(e(App,null));
 </script>
 </body>
 </html>
